@@ -4,10 +4,9 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
-// import bgimage from '../../assets/images/bg.jpeg'
 import './login.css'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { auth_user, login_user } from '../../services/Api/user/userApi'
 
 function Login() {
 
@@ -32,46 +31,40 @@ function Login() {
 
     // AUTH CHECK//
 
-    const authCheck = () => {
-        axios.get("http://localhost:4000/isUserAuth", {
-            headers: {
-                "x-access-token": localStorage.getItem("token"),
-            },
-        }).then((response) => {
-            if (response.data.auth) {
-                navigate('/')
-            }
-        }).catch((err) => {
-            navigate('/login')
-        })
-    }
-    useEffect(() => {
-        authCheck()
-    }, [])
+    // const authCheck = async () => {
+    //     const auth: any = auth_user()
+    //     if (auth) {
+    //         navigate('/')
+    //     } else if (!auth) {
+    //         navigate('/login')
+    //     }
+    // }
+    // useEffect(() => {
+    //     authCheck()
+    // }, [])
 
     //LOGIN SUBMIT//
 
     const submit = async () => {
         try {
-            await axios.post("http://localhost:4000/login", user).then((response: any) => {
-                if (response.data.auth) {
-                    localStorage.setItem("token", response.data.token)
-                    navigate('/')
-                } else {
-                    if (response.data.message === "Wrong username password") {
-                        setIsUserExist(true)
-                        setErrorMessage('Invalid Email or Password')
-                    }
-                    if (response.data.message === "The user is blocked") {
-                        setIsBlockedUser(true)
-                        setErrorMessage('This User is blocked')
-                    }
-                    if (response.data.message === "no user exists") {
-                        setIsUserExist(true)
-                        setErrorMessage('Invalid Email or Password')
-                    }
+            const login = await login_user(user)
+            if (login.auth) {
+                localStorage.setItem("token", login.token)
+                navigate('/')
+            } else {
+                if (login.message === "Wrong username password") {
+                    setIsUserExist(true)
+                    setErrorMessage('Invalid Email or Password')
                 }
-            })
+                if (login.message === "The user is blocked") {
+                    setIsBlockedUser(true)
+                    setErrorMessage('This User is blocked')
+                }
+                if (login.message === "no user exists") {
+                    setIsUserExist(true)
+                    setErrorMessage('Invalid Email or Password')
+                }
+            }
         } catch (err) {
             navigate('/error')
         }
@@ -106,7 +99,7 @@ function Login() {
                                             <div className="login">
                                                 <h1>Login</h1>
                                                 {isUserExist || isBlockedUser ?
-                                                    <Box sx={{ color: 'red',mb:3 }}>{errorMessage}</Box> : ''
+                                                    <Box sx={{ color: 'red', mb: 3 }}>{errorMessage}</Box> : ''
                                                 }
                                                 <input onChange={handleChange} name='email' type="text" placeholder="Email" />
                                                 <input onChange={handleChange} name='password' type="password" placeholder="Password" />

@@ -1,14 +1,14 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Navbar from '../../components/UI/Common/navbar/Navbar'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Box, Container } from '@mui/system'
-import { BottomNavigation, Grid } from '@mui/material'
+import { Grid, } from '@mui/material'
 import ProfileCard from '../../components/UI/LargeScreen/profileCard/ProfileCard'
 import SuggestionCard from '../../components/UI/LargeScreen/suggestionCard/SuggestionCard'
 import FriendListCard from '../../components/UI/LargeScreen/friendListCard/FriendListCard'
-import Feed from '../../components/UI/Common/feed/Feed'
 import BottomNav from '../../components/UI/SmallScreen/bottomNav/BottomNav'
+import PostSuccess from '../../components/UI/Common/snackBars/PostSuccess'
+import { auth_user } from '../../services/Api/user/userApi'
 
 function Home() {
   const navigate = useNavigate()
@@ -16,30 +16,21 @@ function Home() {
   //AUTH CHECK//
 
   const authCheck = () => {
-    axios.get("http://localhost:4000/isUserAuth", {
-      headers: {
-        "x-access-token": localStorage.getItem("token"),
-      },
-    }).then((response: any) => {
-      console.log(response, 'response jwt');
-      if (!response.data.auth) {
-        navigate('login')
-      }
-    }).catch((err: any) => {
-
-    })
+    const auth: any = auth_user()
+    if (auth) {
+      navigate('/')
+    } else if (!auth) {
+      navigate('/login')
+    }
   }
   useEffect(() => {
     authCheck()
   }, [])
 
+
   return (
     <div>
       <Navbar />
-      {/* <Box display='flex' alignItems='self-end'>
-        <BottomNav/>
-        </Box>  */}
-
       <Box sx={{ mt: 1, height: '50vh', width: '100%' }}>
         <Grid container >
           <Grid item xs sx={{ display: { xs: 'none', md: 'none', lg: 'block', sm: 'none' } }}>
@@ -58,17 +49,14 @@ function Home() {
             <Container maxWidth="md">
               <Box sx={{
                 overflow: "hidden",
-                overflowY: "scroll", height: '88vh'
+                overflowY: "scroll", height: '88vh',
               }} >
-                <Feed />
+                {/* <Feed /> */}
+                <Outlet />
+                <Box sx={{ display: { xs: 'block', sm: 'block', md: 'none', lg: 'none' } }}><BottomNav /></Box>
 
               </Box>
             </Container>
-            {/* <Box sx={{ width: '100%', height: '10vh', bgcolor: 'red', position: 'relative' }}>
-
-            </Box> */}
-            
-
           </Grid>
           <Grid item xs sx={{ display: { xs: 'none', md: 'none', lg: 'block', sm: 'none' } }}>
             <Container maxWidth="md">
@@ -83,6 +71,7 @@ function Home() {
           </Box>
         </Grid>
       </Box>
+      <PostSuccess />
     </div>
   )
 }

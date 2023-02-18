@@ -128,6 +128,46 @@ module.exports = {
             res.status(500).json(err)
         }
     },
+
+    // SIGN UP OTP GENERATE //
+
+    SignUpOtp: async(req, res) => {
+        console.log('forgot');
+        console.log(req.body.email)
+        try{
+            Email = req.body.email
+           const user = await signUp.findOne({ email: Email })
+           if (!user) {
+               res.status(200).json({msg:"otp has been sent"})
+                otp = userHelper.OTPgenerator()
+               userHelper.sentOTPverificationmail(Email, otp)
+               
+           } else {
+               res.status(200).json({msg:"user already exist"})
+           }
+        }catch(err){
+            res.status(500).json(err)
+        }
+    },
+
+
+
+    // SIGN UP OTP  VERIFY//
+
+    verifySignUpOtp:async(req,res)=>{
+        try{
+            const otpCheck=req.body.otp
+            console.log(req.body.otp)
+            if(otpCheck===otp){
+                res.status(200).json({msg:"otp verified"})
+            }else{
+                res.status(200).json({msg:"incorrect otp"})
+            }
+
+        }catch(err){
+            res.status(500).json(err)
+        }
+    },
     
     addPost:async(req,res)=>{
         try{
@@ -145,7 +185,8 @@ module.exports = {
         }
     },
     addProfilePicture:async(req,res)=>{
-        try{
+         const userId = ObjectId(req.body.user)
+        try{    
             await signUp.findByIdAndUpdate({_id:userId},
                 {
                     $set:{
@@ -158,7 +199,7 @@ module.exports = {
         }catch(err){
             res.status(500).json(err)
         }
-        const userId = ObjectId(req.body.user)
+       
 
     },
     viewPost:async(req,res)=>{
@@ -196,7 +237,8 @@ module.exports = {
                         userId:1,
                         likesCount:{$size:'$likes'},
                         likes:1,
-                        comment:1
+                        comment:1,
+                        createdAt:1
                     }
                 }
             ])
@@ -280,6 +322,7 @@ module.exports = {
     follow:async(req,res)=>{
         try{
             const {userId,friendId} = req.body
+            
             const user = await followersList.findOne({userId:ObjectId(userId)})
             if(user){
               let result =  user.following.some((el)=>{
@@ -411,6 +454,12 @@ module.exports = {
             res.status(500).json(err)
         }
     },
+    viewUsers:async(req,res)=>{
+        const userList = await signUp.find()
+        if(userList){
+            res.json(userList)
+        }
+},
     postCount:async(req,res)=>{
         try{
             const userId = req.params
@@ -632,8 +681,7 @@ module.exports = {
     deleteComment:async(req,res)=>{
         try{
             const commentId = req.body.commentId
-            const postId = req.body.postId
-            console.log(commentId,postId);
+            const postId = req.body.post_id
             await commentModal.findOneAndUpdate({postId:ObjectId(postId)},
             {
                 $pull:{comment:{_id:ObjectId(commentId)}}
@@ -707,7 +755,7 @@ module.exports = {
     },
     updateCaption:async(req,res)=>{
         const postId = req.params.id
-        const captions = req.body.caption
+        const captions = req.body.comment
         try{
             await post.findByIdAndUpdate({_id:ObjectId(postId)},{
                 $set:{

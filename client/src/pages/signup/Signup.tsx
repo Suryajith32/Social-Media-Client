@@ -3,18 +3,20 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
-// import bgimage from '../../assets/images/bg.jpeg'
 import { useForm } from 'react-hook-form'
 import './signup.css'
 import { useState } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-
+import { sign_up_user, user_forgot_password, user_signup_otp } from '../../services/Api/user/userApi'
+import OtpModal from '../../components/UI/Common/modals/otpModal/OtpModal'
+import { OtpModalOpen } from '../../services/Reducers/UserReducer'
+import { useDispatch } from 'react-redux'
 
 
 function Signup() {
 
     const { register, formState: { errors }, handleSubmit } = useForm()
+    const dispatch = useDispatch()
     const [userExist, setUserExist] = useState<boolean>(false)
     const navigate = useNavigate()
     const [user, setUser] = useState({
@@ -36,21 +38,22 @@ function Signup() {
 
     //SIGNUP SUBMIT
 
-    const onSubmit = async() => {
+    const onSubmit = async (e:any) => {
+       
         try {
             const { username, email, phone, password } = user
-            if (username && email && phone && password) {
-                await axios.post("http://localhost:4000/signup", user).then((response) => {
-                    if (response.data.msg === "User exist") {
-                        setUserExist(!userExist)
-                        navigate('/signup')
-                    } if (response.data.msg === "No user exist") {
-                        navigate('/login')
-                    }
-                })
+            const newUser = {email}
+            const otpSignup = await  user_signup_otp(newUser)
+            console.log(otpSignup,newUser,'otpSignup')
+            if(otpSignup === 'otp has been sent'){
+                dispatch(OtpModalOpen(true))
+            }else if(otpSignup === 'user already exist'){
+                setUserExist(!userExist)
+                navigate('/signup')
             }
         } catch (error) {
             console.log(error)
+            navigate('error')
         }
     }
 
@@ -106,8 +109,8 @@ function Signup() {
                     <Grid sx={{ display: { xs: 'none', md: 'block', lg: 'block', sm: 'none' } }} item xs={6} md={6}>
                         <Box display='flex' flexDirection='column' justifyContent='center' alignContent='center' sx={{ mt: 8, height: '47vh', width: '100%' }}>
                             <Box sx={{ m: 'auto', }}>
-                                <Typography fontWeight={600} variant='h1' sx={{ color: '#FFFFFF', fontStyle: 'italic',caretColor:'transparent' }}>Get </Typography>
-                                <Typography fontWeight={600} variant='h1' sx={{ color: '#FFFFFF', fontStyle: 'italic',}} >Socialized</Typography>
+                                <Typography fontWeight={600} variant='h1' sx={{ color: '#FFFFFF', fontStyle: 'italic', caretColor: 'transparent' }}>Get </Typography>
+                                <Typography fontWeight={600} variant='h1' sx={{ color: '#FFFFFF', fontStyle: 'italic', }} >Socialized</Typography>
                                 <Typography variant='h5' sx={{ color: '#FFFFFF', fontStyle: 'italic' }}>Already have an account?</Typography>
                                 <Typography fontWeight={600} variant='h4' sx={{ color: '#FFFFFF', fontStyle: 'italic', }}>Login now</Typography>
                                 <Link style={{ textDecoration: 'none', color: "black" }} to='/login'><Box display='flex' justifyContent='center' sx={{
@@ -121,6 +124,7 @@ function Signup() {
 
                 </Grid>
             </Box>
+            <OtpModal user={user}/>
         </div>
     )
 }
