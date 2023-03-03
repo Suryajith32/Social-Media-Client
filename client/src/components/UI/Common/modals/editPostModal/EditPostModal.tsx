@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import { EditPostModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { EditPostModalOpen, ErrorModalOpen } from '../../../../../services/Reducers/UserReducer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, FormControl, Textarea } from '@mui/joy';
 import { edit_post } from '../../../../../services/Api/userPost/postsApi';
@@ -43,10 +42,9 @@ export default function BasicModal(selectedPostData: any) {
         try {
             const postId = selectedPostData?.singlePostData?._id
             const editResponse = await edit_post(postId, caption)
-            console.log(editResponse, 'editResponse')
             dispatch(EditPostModalOpen(false))
         } catch (error) {
-            console.log(error)
+            dispatch(ErrorModalOpen(true))
         }
     }
 

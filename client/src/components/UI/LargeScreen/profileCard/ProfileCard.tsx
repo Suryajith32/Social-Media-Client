@@ -1,6 +1,6 @@
 import { Box, Typography, Stack, IconButton } from '@mui/material'
 import Avatar from '@mui/material/Avatar';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import axiosInstance from '../../../../config/axios/axiosInstance';
 import { UserContext } from '../../../../context/userContext';
 import { useContext, useEffect, useState } from 'react'
@@ -11,25 +11,29 @@ import jwtDecode from 'jwt-decode';
 
 
 function ProfileCard() {
+  const isProfileCardUpdate = useSelector((state:any) => state.user.value.profileCardUpdate)
   const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
   const { user } = useContext(UserContext)
   const [currentUserId, setCurrentUserId] = useState<any>()
-  const [currentUserData, setCurrentUserData] = useState<any>()
+  const [currentUserData, setCurrentUserData] = useState<any[]>([])
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
   const [count, setCount] = useState<any>()
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
+    console.log(isProfileCardUpdate,'isProfileCardUpdate')
+    try {
+      const token = localStorage.getItem('token')
     if (token != null) {
       const tokenData: any = jwtDecode(token)
       setCurrentUserId(tokenData?.id)
       dispatch(CurrentUserId(tokenData?.id))
     }
     profileData()
-  }, [user, isProfileEditModal])
+    } catch (error) {
+      console.log(error)
+    }  
+  }, [isProfileCardUpdate,user, isProfileEditModal])
 
   // FETCHING CURRENT USER DATA //
 
@@ -40,10 +44,11 @@ function ProfileCard() {
       },
     }).then((response) => {
       setIsLoaded(true)
+      console.log(response.data,'currentuserData profile card')
       setCurrentUserData(response?.data)
       dispatch(ProfileImage(response?.data[0]?.Images))
     }).catch((err) => {
-      console.log(err, 'error from userData')
+      console.log(err, 'error from userProfileData')
     })
   }
 

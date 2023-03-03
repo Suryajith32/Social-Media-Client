@@ -25,12 +25,10 @@ function SearchBar() {
     const { data: searchResult } = useQuery(["searchUserValues", debouncedValue], () =>
         search_user(debouncedValue)
     )
-    console.log(searchResult, 'searchResult')
 
     // HANDLING SEARCH //
 
     const handleSearchChange = async (e: any) => {
-        console.log(e.target.value, 'e.target')
         if (e.target.value) {
             setAnchorEl(e.currentTarget);
             setOpen(true);

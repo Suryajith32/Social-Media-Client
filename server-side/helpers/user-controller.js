@@ -40,7 +40,7 @@ module.exports = {
                     phone: req.body.phone,
                     password: req.body.password,
                     confirmpassword: req.body.password
-                })
+                })  
                 signUpUser.save()
                 .then(data => {
                 })
@@ -128,6 +128,53 @@ module.exports = {
             res.status(500).json(err)
         }
     },
+
+       // DO NOTIFICATION //
+
+       doNotifications: async (req, res) => {
+        try {
+            const result = await userHelper.addNotifications(req.body)
+            res.json(result)
+        } catch (err) {
+            res.status(500).json({ error: err.message })
+        }
+    },
+
+    // GET NOTIFICATION //
+
+    getNotifications: async (req, res) => {
+        try {
+            const result = await userHelper.getUserNotifications(req.userId)
+            res.json(result)
+        } catch (err) {
+            res.status(500).json({ error: err.message })
+        }
+    },
+
+    // UPDATE NOTIFICATION // 
+
+    EditNotifications: async (req, res) => {
+        console.log(req.params,'params id')
+        try {
+            const result = await userHelper.doNotifications(req.params.id)
+            res.json(result)
+            console.log(result,'result update')
+        } catch (err) {
+            res.status(500).json({ error: err.message })
+        }
+    },
+
+    // GET NOTIFICATION COUNT //
+
+    getNotificationsCount: async (req, res) => {
+        try {
+            const result = await userHelper.getUserNotificationsCount(req.userId)
+            res.json(result)
+        } catch (err) {
+            res.status(500).json({ error: err.message })
+        }
+    },
+
 
     // SIGN UP OTP GENERATE //
 
@@ -719,7 +766,54 @@ module.exports = {
             const conversation = await Conversation.find({
                 members:{ $in:[(ObjectId(req.params))]}
             })
-            res.status(200).json(conversation)
+            const result = await Conversation.aggregate([
+                {
+                    $match:{members:{$in:[ObjectId(req.params)]}}
+                },
+                {
+                    $addFields: {
+                        "user":
+                             "$members"
+                    }
+                }
+                ,{
+                    $unwind:'$user'
+                },
+                {
+                    $match:{user:{$ne:ObjectId(req.params)}}
+                },{
+                    $lookup: {
+                        from: 'users',
+                        localField: 'user',
+                        foreignField: '_id',
+                        as: "userz"
+                    }
+                },{
+                    $unwind:'$userz'
+                },{
+                    $lookup: {
+                        from: 'messages',
+                        localField: 'latestMessage',
+                        foreignField: '_id',
+                        as: "latestMessage"
+                    }
+                },{
+                    $unwind:'$latestMessage'
+                }
+                ,
+                {
+                    $project:{
+                        time:'$updatedAt',
+                        latestMessage:'$latestMessage.text',
+                        username:'$userz.username',
+                        Images:'$userz.Images',
+                        users:'$users'
+                    }
+                },
+                { $sort : { time : -1 } }
+            ])
+            console.log(conversation,'agree result')
+            res.status(200).json(result)
         }catch(err){
             res.status(500).json(err)
         }
@@ -728,6 +822,9 @@ module.exports = {
         const newMessage = Message(req.body)
         try{
             const savedMessage = await newMessage.save()
+            await Conversation.findByIdAndUpdate(newMessage.conversationId, {
+                latestMessage: savedMessage._id
+            })
             res.status(200).json(savedMessage)
         }catch(err){
             res.status(500).json(err)

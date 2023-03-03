@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux'
-import { PostModalOpen } from '../../../../services/Reducers/UserReducer'
+import { ErrorModalOpen, PostModalOpen } from '../../../../services/Reducers/UserReducer'
 import { SnackBarOpen } from '../../../../services/Reducers/UserReducer';
 import { useContext, useState } from 'react';
 import { IconButton } from '@mui/joy';
@@ -13,6 +13,7 @@ import AspectRatio from '@mui/joy/AspectRatio';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { UserContext } from '../../../../context/userContext';
 import { add_post } from '../../../../services/Api/userPost/postsApi';
+import { SnackBarMessage } from '../../../../services/Reducers/UserDataReducer';
 
 
 const style = {
@@ -76,13 +77,13 @@ export default function BasicModal() {
         if (caption && Images) {
             try {
                 const addPostResponse = await add_post(Data)
-                console.log(addPostResponse, 'addpostresponse')
+                dispatch(SnackBarMessage('post added'))
                 if (addPostResponse) {
                     dispatch(SnackBarOpen(true))
                     dispatch(PostModalOpen(false))
                 }
             } catch (error) {
-                console.log(error)
+                dispatch(ErrorModalOpen(true))
             }
         }
     }

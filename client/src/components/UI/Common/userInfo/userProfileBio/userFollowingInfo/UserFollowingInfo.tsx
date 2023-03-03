@@ -1,6 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material'
 import IconButton from '@mui/material/IconButton/IconButton'
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { get_followers_list, get_following_list, view_all_following } from '../../../../../../services/Api/user/userApi'
 import { FollowFollowingModalOpen } from '../../../../../../services/Reducers/UserReducer'
@@ -31,7 +31,6 @@ function UserFollowingInfo({ user }: any) {
 
     const GetAllFollowers = async (userId: any) => {
         const GetAllFollowingRespone = await get_followers_list(userId)
-        console.log(GetAllFollowingRespone, 'GetAllFollowingRespone from follow')
         setFollowersList(GetAllFollowingRespone)
     }
 
@@ -39,7 +38,6 @@ function UserFollowingInfo({ user }: any) {
 
     const GetAllFollowings = async (userId: any) => {
         const GetAllFollowingResponse = await get_following_list(userId)
-        console.log(GetAllFollowingResponse, 'GetAllFollowingResponse from follow')
         setFollowingList(GetAllFollowingResponse)
     }
     
@@ -48,7 +46,6 @@ function UserFollowingInfo({ user }: any) {
     const ViewAllFollowing = async (userId:any) =>{
         const  viewAllFollowingRespone = await view_all_following(userId)
         setViewFollowing(viewAllFollowingRespone?.following)
-        console.log(viewFollowing,'viewAllFollowingRespone listyttt')
         }
 
 

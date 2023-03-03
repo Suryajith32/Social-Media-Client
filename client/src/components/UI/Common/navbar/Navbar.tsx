@@ -1,4 +1,4 @@
-import { Avatar, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
+import { Avatar, Badge, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import Diversity2Icon from '@mui/icons-material/Diversity2';
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
@@ -18,11 +18,14 @@ import { UserContext } from '../../../../context/userContext';
 import jwtDecode from 'jwt-decode';
 import { useSelector } from 'react-redux';
 import SearchBar from './searchBar/SearchBar';
+import { get_notification_count } from '../../../../services/Api/user/userApi';
 
 function Navbar() {
     const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
+    const notifyUpdate = useSelector((state:any) => state.user.value.isNotifyUpdate)
     const ProfileImage = useSelector((state: any) => state.userData.value.profileImage)
-    const [pathname,setPathName] = useState<any>()
+    const [pathname, setPathName] = useState<any>()
+    const [notificationCount, setNotificationCount] = useState<number>()
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
@@ -50,7 +53,23 @@ function Navbar() {
             const userData = jwtDecode(data)
             setUser(userData)
         }
-    }, [isProfileEditModal,window.location.pathname])
+    }, [isProfileEditModal, window.location.pathname])
+
+    useEffect(() => {
+        GetNotificationCount()
+    }, [notifyUpdate])
+
+
+    // FETCHING NOTIFICATION COUNT //
+
+    const GetNotificationCount = async () => {
+        try {
+            const countResponse = await get_notification_count()
+            setNotificationCount(countResponse?.length)
+        } catch (error) {
+
+        }
+    }
 
     return (
         <div>
@@ -62,23 +81,24 @@ function Navbar() {
                                 <Box sx={{ color: '#009EFF', ml: 1 }}>
                                     <Diversity2Icon fontSize='large' />
                                 </Box>
-                              
-                               {/* //SEARCH BAR// */}
 
-                               <SearchBar/>
+                                {/* //SEARCH BAR// */}
+
+                                <SearchBar />
 
                                 <NavLink to='/'><Box sx={{ color: '#009EFF', display: { md: 'block', sm: 'block', xs: 'none' } }}>
-                                   { pathname === '/'? <HomeIcon sx={{ fontSize: "30px", }} />:<HomeOutlinedIcon sx={{ fontSize: "30px", }}/>}
+                                    {pathname === '/' ? <HomeIcon sx={{ fontSize: "30px", }} /> : <HomeOutlinedIcon sx={{ fontSize: "30px", }} />}
                                 </Box></NavLink>
                             </Stack>
                         </Box>
                         <Box sx={{ mr: 3, }}>
                             <Stack display='flex' direction='row' spacing={5} alignItems='center'>
-                            <NavLink to='inbox'> <Box sx={{ color: '#009EFF', display: { md: 'block', sm: 'block', xs: 'block' } }}>
-                                   {pathname === '/inbox' ?<QuestionAnswerIcon sx={{ fontSize: "30px" }}/>: <QuestionAnswerOutlinedIcon sx={{ fontSize: "30px" }} />}
+                                <NavLink to='inbox'> <Box sx={{ color: '#009EFF', display: { md: 'block', sm: 'block', xs: 'block' } }}>
+                                    {pathname === '/inbox' ? <QuestionAnswerIcon sx={{ fontSize: "30px" }} /> : <QuestionAnswerOutlinedIcon sx={{ fontSize: "30px" }} />}
                                 </Box></NavLink>
                                 <NavLink to='notification'><Box sx={{ color: '#009EFF', display: { md: 'block', sm: 'block', xs: 'none' } }}>
-                                    {pathname === '/notification'?<NotificationsIcon sx={{ fontSize: "30px" }}/>:<NotificationsNoneOutlinedIcon sx={{ fontSize: "30px" }} />}
+                                    {pathname === '/notification' ?
+                                    <Badge badgeContent={notificationCount} color="error"><NotificationsIcon sx={{ fontSize: "30px" }} /> </Badge> :  <Badge badgeContent={notificationCount} color="error"> <NotificationsNoneOutlinedIcon sx={{ fontSize: "30px" }} /></Badge>}
                                 </Box></NavLink>
                                 <Box sx={{ display: { md: 'block', sm: 'block', xs: 'none' } }}>
                                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', }}>

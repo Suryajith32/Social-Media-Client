@@ -1,12 +1,11 @@
-import { Box, Paper } from "@mui/material"
+import { Box,  } from "@mui/material"
 import { Container } from "@mui/system"
 import UsersProfilePosts from '../../components/UI/Common/posts/UsersProfilePost'
 import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../config/axios/axiosInstance";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { user_profile_data } from "../../services/Api/user/userApi";
-import { UserContext } from "../../context/userContext";
 import { CurrentUserId, FollowFollowerCount, ProfileInfo } from "../../services/Reducers/UserDataReducer";
 import jwtDecode from "jwt-decode";
 import UsersInfo from "../../components/UI/Common/usersInfo/UsersInfo";

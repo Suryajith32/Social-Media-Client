@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton, Typography, } from '@mui/material'
+import { Avatar, Box, IconButton, Typography, } from '@mui/material'
 import { Stack } from '@mui/system'
 import { useQuery } from '@tanstack/react-query'
 import { useContext } from 'react'
@@ -8,11 +8,13 @@ import { useState, useEffect } from 'react'
 import { view_all_following } from '../../../../services/Api/user/userApi'
 import jwtDecode from 'jwt-decode'
 import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {UsersProfileData} from '../../../../services/Reducers/UserDataReducer'
+import { ErrorModalOpen, ProfileCardUpdate } from '../../../../services/Reducers/UserReducer'
 
 function SuggestionCard() {
     const { user } = useContext(UserContext)
+    const isProfileCardUpdate = useSelector((state:any) => state.user.value.profileCardUpdate)
     const dispatch = useDispatch()
     const [following, setFollowing] = useState<any>()
     const [viewFollowing,setViewFollowing] = useState<any>()
@@ -31,7 +33,7 @@ function SuggestionCard() {
 
     // FETCHING SUGGESTED USER //
 
-    const { data: SuggestedProfiles, isLoading, refetch } = useQuery(["suggestedprofiles"], () => {
+    const { data: SuggestedProfiles, refetch } = useQuery(["suggestedprofiles"], () => {
         return axiosInstance.get('/users', {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
@@ -45,19 +47,18 @@ function SuggestionCard() {
     // FOLLOWING A USER //
 
     const Follow = async (friendId: any) => {
-        console.log(viewFollowing,'viewAllFollowingRespone')
         const userId = user?.id
         const id = { userId, friendId }
-        console.log(id, 'this is both')
         await axiosInstance.post("http://localhost:4000/follow", id, {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
             },
         }).then((response) => {
-            console.log(response, 'response from follow click')
             setFollowing(response?.data?.msg)
+            dispatch(ProfileCardUpdate(true))
         }).catch((err) => {
             console.log(err, 'from Follow')
+            dispatch(ErrorModalOpen(true))
         })  
     }
 
@@ -66,7 +67,6 @@ function SuggestionCard() {
     const ViewAllFollowing = async (userId:any) =>{
     const  viewAllFollowingRespone = await view_all_following(userId)
     setViewFollowing(viewAllFollowingRespone?.following)
-    console.log(viewFollowing,'viewAllFollowingRespone')
     refetch()
     }
 

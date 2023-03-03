@@ -5,6 +5,7 @@ const adminlogin = require('../models/adminLogin')
 const users = require('../models/userSignUp')
 const posts = require('../models/posts')
 const { post } = require('../routes/user')
+const userHelper = require('./user-helper')
 const ObjectId = mongoose.Types.ObjectId
 
 
@@ -56,6 +57,8 @@ module.exports={
         await users.findByIdAndUpdate({_id:ObjectId(userId)},{userStatus:true})
            
     },
+
+
     viewPost:async(req,res)=>{
         try{
         const viewpost = await posts.aggregate([

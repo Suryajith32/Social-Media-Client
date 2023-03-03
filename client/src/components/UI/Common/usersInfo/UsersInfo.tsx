@@ -5,8 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../../../../context/userContext'
 import { conversation_start, follow_status_check, follow_user, get_follow_count, view_all_following } from '../../../../services/Api/user/userApi'
-import { PostModalOpen } from '../../../../services/Reducers/UserReducer'
-
+import { ErrorModalOpen } from '../../../../services/Reducers/UserReducer'
 function UsersInfo() {
   const usersData = useSelector((state: any) => state.userData.value.usersProfileData)
   const dispatch = useDispatch()
@@ -15,8 +14,6 @@ function UsersInfo() {
   const [viewFollowing, setViewFollowing] = useState<any>()
   const [status, setStatus] = useState<any>()
   const { user } = useContext(UserContext)
-
-
 
   useEffect(() => {
     console.log(usersData, 'usersData')
@@ -32,14 +29,12 @@ function UsersInfo() {
     const friendId = usersData?._id
     const id = { userId, friendId }
     const followResponse = await follow_user(id)
-    console.log(followResponse, 'followResponse')
   }
 
   // FETCHING FOLLOWING COUNT //
 
   const getAllCount = async (CurrentUserId: any) => {
     const countResponse = await get_follow_count(CurrentUserId)
-    console.log(countResponse, 'countResponse')
     setCount(countResponse)
   }
 
@@ -48,7 +43,6 @@ function UsersInfo() {
   const ViewAllFollowing = async (userId: any) => {
     const viewAllFollowingRespone = await view_all_following(userId)
     setViewFollowing(viewAllFollowingRespone?.following)
-    console.log(viewFollowing, 'viewAllFollowingRespone usersssss')
   }
 
   // STATUS CHECK FOLLOW // 
@@ -56,7 +50,6 @@ function UsersInfo() {
   const StatusCheck = async (friendId: any) => {
     const statusCheckResponse = await follow_status_check(user?.id, friendId)
     setStatus(statusCheckResponse)
-    console.log(statusCheckResponse, 'statusCheckResponse')
   }
 
 
@@ -74,12 +67,12 @@ function UsersInfo() {
     const id = { userId, friendId }
     try {
       const messageUserResponse = await conversation_start(id)
-      console.log(messageUserResponse, 'messageUserResponse')
       if (messageUserResponse) {
         navigate('/inbox')
       }
     } catch (error) {
       console.log(error)
+      dispatch(ErrorModalOpen(true))
     }
 
   }

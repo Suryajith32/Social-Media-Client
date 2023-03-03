@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ReportPostModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { ErrorModalOpen, ReportPostModalOpen } from '../../../../../services/Reducers/UserReducer';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -53,7 +53,7 @@ export default function BasicModal(singlePostData: any) {
                 dispatch(ReportPostModalOpen(false))
             }
         } catch (error) {
-            console.log(error)
+            dispatch(ErrorModalOpen(true))
         }
     }
 

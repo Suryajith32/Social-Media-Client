@@ -1,14 +1,8 @@
 import { Avatar, Divider, IconButton, ListItemIcon, Menu, MenuItem, Stack, Tooltip, Typography } from '@mui/material'
 import { Box } from '@mui/system'
-import Diversity2Icon from '@mui/icons-material/Diversity2';
-import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import HomeIcon from '@mui/icons-material/Home';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
-// import './navbar.css'
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import PersonAdd from '@mui/icons-material/PersonAdd';
@@ -19,7 +13,6 @@ import { UserContext } from '../../../../context/userContext';
 import jwtDecode from 'jwt-decode';
 import { useDispatch, useSelector } from 'react-redux';
 import { DrawerOpen } from '../../../../services/Reducers/AdminReducer';
-// import SearchBar from './searchBar/SearchBar';
 
 function AdminNavbar() {
     const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
@@ -29,7 +22,6 @@ function AdminNavbar() {
     const dispatch = useDispatch()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
-    const { user } = useContext(UserContext)
     const { setUser } = useContext(UserContext)
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -40,11 +32,11 @@ function AdminNavbar() {
     };
 
     const handleProfile = () => {
-        navigate('profile')
+        navigate('')
     }
     const handleLogout = () => {
         localStorage.removeItem('token')
-        navigate('/login')
+        navigate('/admin-login')
     }
 
     useEffect(() => {

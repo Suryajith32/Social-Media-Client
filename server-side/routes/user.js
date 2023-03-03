@@ -48,6 +48,14 @@ router.get('/statusfollow/:userId/:friendId', verifyJWT, userController.checkFol
 
 router.get('/followingcount/:id', verifyJWT, userController.followingCount)
 
+router.post('/addnotification',  userController.doNotifications)
+
+router.get('/getnotifications', verifyJWT, userController.getNotifications)
+
+router.patch('/updatenotifications/:id', userController.EditNotifications)
+
+router.get('/getnotificationscount',verifyJWT, userController.getNotificationsCount)
+
 router.get('/postcount/:id', verifyJWT, userController.postCount)
 
 router.post('/likepost', verifyJWT, userController.likePost)

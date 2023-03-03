@@ -1,5 +1,4 @@
 import { Box } from "@mui/material"
-import SearchIcon from '@mui/icons-material/Search';
 import Typography from "@mui/material/Typography";
 import { Stack } from "@mui/system";
 import Avatar from "@mui/material/Avatar";
@@ -7,28 +6,25 @@ import IconButton from "@mui/material/IconButton/IconButton";
 import SendSharpIcon from '@mui/icons-material/SendSharp';
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../../../../config/axios/axiosInstance";
-import { view_all_following } from "../../../../services/Api/user/userApi";
-import { useContext, useState, useEffect } from 'react'
-import { UserContext } from "../../../../context/userContext";
+import { conversation_start, view_all_following } from "../../../../services/Api/user/userApi";
+import {  useState, useEffect } from 'react'
 import jwtDecode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UsersProfileData } from "../../../../services/Reducers/UserDataReducer";
+import { ErrorModalOpen } from "../../../../services/Reducers/UserReducer";
 
 
 
 function FriendListCard() {
-    const { user } = useContext(UserContext)
-    const [following, setFollowing] = useState<any>()
+    const [user,setuser]  = useState<any>()
     const [viewFollowing, setViewFollowing] = useState<any>()
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-
-
     // FETCHING FRIEND USERs //
 
-    const { data: FriendsProfiles, isLoading, refetch } = useQuery(["friendsprofile"], () => {
+    const { data: FriendsProfiles, refetch } = useQuery(["friendsprofile"], () => {
         return axiosInstance.get('/users', {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
@@ -37,7 +33,6 @@ function FriendListCard() {
             response.data
         )
     })
-    console.log(FriendsProfiles, 'FriendsProfiles')
 
     useEffect(() => {
         const data = localStorage.getItem('token')
@@ -49,28 +44,44 @@ function FriendListCard() {
     }, [user])
 
 
-
     // VIEW ALL FOLLOWING //
 
     const ViewAllFollowing = async (userId: any) => {
+        setuser(userId)
         const viewAllFollowingRespone = await view_all_following(userId)
         setViewFollowing(viewAllFollowingRespone)
         refetch()
-        console.log(viewAllFollowingRespone, 'viewAllFollowingRespone from friends')
     }
 
     // HANDLING NAVIGATION TO USERS PROFILE //
 
     const handleClickUser = (item:any) => {
         dispatch(UsersProfileData(item))
-        console.log(item,'itemmm')
         navigate('users-profile')
     }
+
+      // MESSAGING THIS USER //
+
+  const handleMessageThisUser = async (item:any) => {
+    const userId = user
+    const friendId = item?._id
+    const id = { userId, friendId }
+    try {
+      const messageUserResponse = await conversation_start(id)
+      if (messageUserResponse) {
+        navigate('/inbox')
+      }
+    } catch (error) {
+      console.log(error)
+      dispatch(ErrorModalOpen(true))
+    }
+
+  }
 
     return (
         <div>
             <Box sx={{ bgcolor: 'rgba(225,225,225,0.10)', height: '70vh', borderRadius: '23px' }}>
-                <Box display='flex' justifyContent='center' sx={{ width: '100%', pt: 2 }}>
+                {/* <Box display='flex' justifyContent='center' sx={{ width: '100%', pt: 2 }}>
                     <Box display='flex' alignItems='center' sx={{ bgcolor: 'rgba(255, 255, 255, 0.2)', width: '14em', maxHeight: '6vh', borderRadius: 2, }}>
                         <Box display='flex' justifyContent='center' alignItems='center' sx={{ ml: 1, height: '4.4vh', width: '2.5em', bgcolor: '#009EFF', borderRadius: 20, }}>
                             <SearchIcon />
@@ -79,8 +90,8 @@ function FriendListCard() {
                             <input className='nav-search' type='text' placeholder='Search' />
                         </Box>
                     </Box>
-                </Box>
-                <Box sx={{ ml: 5, mt: 3 }}>
+                </Box> */}
+                <Box sx={{ ml: 5, pt: 3 }}>
                     <Typography fontWeight={480} sx={{ opacity: 0.5, color: '#FFFFFF' }}>Friends</Typography>
                 </Box>
                 <Box>
@@ -101,7 +112,7 @@ function FriendListCard() {
                                                 <IconButton color="primary" aria-label="upload picture" component="label">
                                                     <Box display='flex' alignItems='center' justifyContent='center' sx={{ width: '70px', height: '4vh', }}>
                                                         <Box>
-                                                            <IconButton sx={{ color: '#FFFFFF' }}>
+                                                            <IconButton onClick={()=>handleMessageThisUser(item)} sx={{ color: '#FFFFFF' }}>
                                                                 <SendSharpIcon />
                                                             </IconButton>
                                                         </Box>

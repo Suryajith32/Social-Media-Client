@@ -1,11 +1,14 @@
 import { Box, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { user_forgot_password } from '../../services/Api/user/userApi'
+import { ErrorModalOpen } from '../../services/Reducers/UserReducer'
 
 function ForgotPassword() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const { register, formState: { errors }, handleSubmit } = useForm()
     const [error, setError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -25,7 +28,6 @@ function ForgotPassword() {
     const onSubmit = async () => {
         const { email } = user
         if (email) {
-            console.log("yeah email is here")
             try {
                 const forgotPass = await user_forgot_password(user)
                      if (forgotPass === "ChangePassword") {
@@ -36,6 +38,7 @@ function ForgotPassword() {
                 }
             } catch (error) {
                 navigate('error')
+                dispatch(ErrorModalOpen(true))
             }                
         }
     }

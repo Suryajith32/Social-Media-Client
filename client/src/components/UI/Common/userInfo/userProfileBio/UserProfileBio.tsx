@@ -11,8 +11,7 @@ function UserProfileBio() {
     const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
     const currentUserProfileBio = useSelector((state:any) => state.userData.value.profileInformation)
    
-    useEffect(() => {  
-        
+    useEffect(() => {       
    }, [isProfileEditModal])
    
   

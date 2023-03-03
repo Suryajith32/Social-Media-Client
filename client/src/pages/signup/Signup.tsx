@@ -7,9 +7,9 @@ import { useForm } from 'react-hook-form'
 import './signup.css'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { sign_up_user, user_forgot_password, user_signup_otp } from '../../services/Api/user/userApi'
+import {  user_signup_otp } from '../../services/Api/user/userApi'
 import OtpModal from '../../components/UI/Common/modals/otpModal/OtpModal'
-import { OtpModalOpen } from '../../services/Reducers/UserReducer'
+import { ErrorModalOpen, OtpModalOpen } from '../../services/Reducers/UserReducer'
 import { useDispatch } from 'react-redux'
 
 
@@ -44,7 +44,6 @@ function Signup() {
             const { username, email, phone, password } = user
             const newUser = {email}
             const otpSignup = await  user_signup_otp(newUser)
-            console.log(otpSignup,newUser,'otpSignup')
             if(otpSignup === 'otp has been sent'){
                 dispatch(OtpModalOpen(true))
             }else if(otpSignup === 'user already exist'){
@@ -53,7 +52,7 @@ function Signup() {
             }
         } catch (error) {
             console.log(error)
-            navigate('error')
+           dispatch(ErrorModalOpen(true))
         }
     }
 

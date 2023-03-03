@@ -1,9 +1,8 @@
 import { Avatar, Box, Button, Container, IconButton, Menu, MenuItem, Typography } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import InsertCommentOutlinedIcon from '@mui/icons-material/InsertCommentOutlined';
-import SendSharpIcon from '@mui/icons-material/SendSharp';
 import AspectRatio from '@mui/joy/AspectRatio';
 import { Stack } from '@mui/system'
 import { useQuery } from '@tanstack/react-query';
@@ -19,15 +18,19 @@ import CommentModal from '../modals/commentModal/CommentModal'
 import PostDeleteModal from '../modals/postDeleteModal/PostDeleteModal'
 import EditPostModal from '../modals/editPostModal/EditPostModal'
 import ReportPostmodal from '../modals/reportPostModal/ReportPostModal'
-import { useDispatch } from 'react-redux';
-import { CommentModalOpen, EditPostModalOpen, ReportPostModalOpen } from '../../../../services/Reducers/UserReducer'
+import { useDispatch, useSelector } from 'react-redux';
+import { CommentModalOpen, EditPostModalOpen, ErrorModalOpen, NotifyUpdate, ReportPostModalOpen, SnackBarOpen } from '../../../../services/Reducers/UserReducer'
 import { PostDeleteModalOpen } from '../../../../services/Reducers/UserReducer'
-import { like_user_post, user_post_details } from '../../../../services/Api/userPost/postsApi';
+import { like_user_post, user_post_details, get_all_posts } from '../../../../services/Api/userPost/postsApi';
 import NoPosts from '../../../skelton/NoPosts';
+import { create_notification } from '../../../../services/Api/user/userApi';
+import { SnackBarMessage } from '../../../../services/Reducers/UserDataReducer';
 
-function Posts() {
+function Posts({ socketio }: any) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [posts, setPosts] = useState<any[]>([])
     const open = Boolean(anchorEl);
+    const notifyUpdate = useSelector((state: any) => state.user.value.isNotifyUpdate)
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -41,7 +44,6 @@ function Posts() {
     const dispatch = useDispatch()
     if (user) {
         var userId = user.id
-        console.log(user?.id, 'from reportjkfghf')
     }
 
     // FETCHING ALL POSTS //
@@ -56,20 +58,63 @@ function Posts() {
         )
     })
 
+    const GetAllPost = async () => {
+        const fetchPostResponse = await get_all_posts()
+        console.log(fetchPostResponse, 'fetchPostResponse')
+        setPosts(fetchPostResponse)
+    }
+
+    useEffect(() => {
+        GetAllPost()
+    }, [])
+
+
 
 
     console.log(PostData, 'PostDataall')
 
     // LIKE POST // // UNLIKE POST //
 
-    const LikePost = async (postId: string, username: string, type: number, Images: any) => {
+    const LikePost = async (postId: string, username: string, type: number, Images: any, postOwnerId: any, DP: any) => {
         const userId = user.id
         const id = { postId, userId }
+        let details = {
+            receiverId: postOwnerId,
+            userName: username,
+            type: "liked",
+            userDp: DP,
+            read: false
+        }
         try {
-            await like_user_post(id)
+            const likeResponse = await like_user_post(id)
+            if (likeResponse === 'like') {
+                socketio?.emit("sendNotification", details)
+                let notifyDetails = {
+                    receiverId: postOwnerId,
+                    senderId: userId,
+                    postId: postId,
+                    type: "liked",
+                }
+
+                // CREATING NOTIFICATION //
+
+                try {
+                    if (postOwnerId !== userId) {
+                        await create_notification(notifyDetails)
+                        dispatch(SnackBarMessage('like added'))
+                        dispatch(NotifyUpdate(!notifyUpdate))
+                        dispatch(SnackBarOpen(true))
+                    }
+                } catch (error) {
+                    console.log(error, 'notification api error')
+                }
+            } else {
+                dispatch(SnackBarMessage('like removed'))
+                dispatch(SnackBarOpen(true))
+            }
             refetch()
         } catch (error) {
-            navigate('error')
+            dispatch(ErrorModalOpen(true))
         }
     }
 
@@ -84,7 +129,7 @@ function Posts() {
                 dispatch(CommentModalOpen(true))
             }
         } catch (error) {
-            navigate('error')
+            dispatch(ErrorModalOpen(true))
         }
     }
 
@@ -104,14 +149,16 @@ function Posts() {
 
     // HANDLE POST REPORT MODAL //
 
-    const OpenReportPostModal = (item:any) => {
-        setSinglePostData(item)
-        dispatch(ReportPostModalOpen(true))
+    const OpenReportPostModal = (item: any) => {
+        // setSinglePostData(item)
+        // dispatch(ReportPostModalOpen(true))
+        console.log(item, 'report item')
+        console.log(user?.name, 'user id fromm context')
     }
 
-       // HANDLING NAVIGATION TO USERS PROFILE //
+    // HANDLING NAVIGATION TO USERS PROFILE //
 
-       const handleClickUser = () => {
+    const handleClickUser = () => {
         navigate('users-profile')
     }
 
@@ -123,21 +170,21 @@ function Posts() {
                 </div> :
                 <div>
 
-                    {PostData?.length === 0 ?
+                    {posts?.length === 0 ?
                         <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center' sx={{ height: '50vh' }}>
                             <NoPosts />
                         </Box> :
                         <>
-                            {PostData && PostData?.map((item: any, index: number) => (
-                                <Box key={index} sx={{ bgcolor: 'rgba(225,225,225,0.10)', height: '73vh', borderRadius: '23px', mt: 2 }}>
+                            {PostData?.map((item: any, index: number) => (
+                                <Box key={index - 1} sx={{ bgcolor: 'rgba(225,225,225,0.10)', height: '73vh', borderRadius: '23px', mt: 2 }}>
                                     <Box sx={{ ml: 2, mr: 2 }}>
                                         <Box sx={{ pt: 1, ml: 2 }}>
                                             <Stack display='flex' direction='row' spacing={2}>
-                                                <Box onClick={()=>handleClickUser()} sx={{ pt: 1 }}>
+                                                <Box onClick={() => handleClickUser()} sx={{ pt: 1 }}>
                                                     {item.userId.Images ?
                                                         <Avatar
                                                             alt="Remy Sharp"
-                                                            src={`/images/${item.userId.Images}`}
+                                                            src={`/images/${item?.userId?.Images}`}
                                                             sx={{ width: 55, height: 55 }}
                                                         /> :
                                                         <Avatar
@@ -148,7 +195,7 @@ function Posts() {
                                                 </Box>
                                                 <Box sx={{ pt: 2, width: '100%' }}>
                                                     <Stack>
-                                                        <Box onClick={()=>handleClickUser()} sx={{ color: '#FFFFFF' }}>
+                                                        <Box onClick={() => handleClickUser()} sx={{ color: '#FFFFFF' }}>
                                                             <Typography fontWeight='bold'>{item?.userId?.username}</Typography>
                                                         </Box>
                                                         <Box sx={{ color: '#FFFFFF', opacity: 0.5, width: '100px' }}>
@@ -181,13 +228,14 @@ function Posts() {
                                                                 'aria-labelledby': 'basic-button',
                                                             }}
                                                         >
-                                                            {item?.userId?._id === user?.id ? '' : <MenuItem onClick={() => OpenReportPostModal(item)}>Report</MenuItem>}
+                                                            <MenuItem onClick={() => OpenReportPostModal(item)}>{item?.userId?.username}</MenuItem>
                                                             {item?.userId?._id === user?.id ? <MenuItem onClick={() => OpendeletePostModal(item)}>Delete</MenuItem> : ''}
                                                             {item?.userId?._id === user?.id ? <MenuItem onClick={() => OpenEditPostModaal(item)}>Edit</MenuItem> : ''}
                                                         </Menu>
                                                     </Box>
                                                 </Box>
                                             </Stack>
+
                                         </Box>
                                         <Container maxWidth="sm">
                                             <Box display='flex' alignItems='center' sx={{ width: '100%', height: '8vh', mt: 1, color: '#FFFFFF', ml: 1, mr: 2 }}>
@@ -205,27 +253,27 @@ function Posts() {
                                             {/* <Box sx={{ color: '#FFFFFF', ml: 4, mr: 4, }}> */}
                                             <Box >
                                                 {item.likes.includes(userId) ?
-                                                    <IconButton onClick={() => LikePost(item?._id, item?.userId.username, 1, item?.Images)} sx={{ color: '#FFFFFF' }}>
+                                                    <IconButton onClick={() => LikePost(item?._id, item?.userId.username, 1, item?.Images, item?.userId?._id, item?.userId?.Images)} sx={{ color: '#FFFFFF' }}>
                                                         <ThumbUpAltIcon />
                                                         <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}>{item?.likesCount ? item?.likesCount + 'likes' : 'Likes'}</Typography></Box>
                                                     </IconButton> :
-                                                    <IconButton onClick={() => LikePost(item?._id, item?.userId.username, 1, item?.Images)} sx={{ color: '#FFFFFF' }}>
+                                                    <IconButton onClick={() => LikePost(item?._id, item?.userId.username, 1, item?.Images, item?.userId?._id, item?.userId?.Images)} sx={{ color: '#FFFFFF' }}>
                                                         <ThumbUpOffAltIcon />
-                                                        <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}>{item?.likesCount === 0 ? 'likes':item?.likesCount  +'likes'} </Typography></Box>
+                                                        <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}>{item?.likesCount === 0 ? 'likes' : item?.likesCount + 'likes'} </Typography></Box>
                                                     </IconButton>}
-                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{item?.likesCount === 0 ? 'likes':item?.likesCount  +'likes'}</Typography></Box>
+                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{item?.likesCount === 0 ? 'likes' : item?.likesCount + 'likes'}</Typography></Box>
                                             </Box>
                                             <Box>
                                                 <IconButton onClick={() => handleCommentModal(item?._id, item?.userId.username)} sx={{ color: '#FFFFFF' }}>
                                                     <InsertCommentOutlinedIcon />
-                                                    <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}> {item?.comment[0]?.comment?.length === 0 ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
+                                                    <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}> {!item?.comment[0]?.comment ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
                                                 </IconButton>
-                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{item?.comment[0]?.comment?.length === 0 ? 'comments' : item?.comment[0]?.comment?.length + 'comment'} </Typography></Box>
+                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{!item?.comment[0]?.comment ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
                                             </Box>
                                             <Box>
-                                                <IconButton sx={{ color: '#FFFFFF' }}>
+                                                {/* <IconButton sx={{ color: '#FFFFFF' }}>
                                                     <SendSharpIcon />
-                                                </IconButton>
+                                                </IconButton> */}
                                             </Box>
                                             {/* </Box> */}
                                         </Box>
@@ -237,10 +285,10 @@ function Posts() {
 
                 </div>
             }
-            <CommentModal singlePostData={singlePostData} userName={userName} />
+            <CommentModal singlePostData={singlePostData} userName={userName} socketio={socketio} />
             <PostDeleteModal singlePostData={singlePostData} />
             <EditPostModal singlePostData={singlePostData} />
-            <ReportPostmodal singlePostData={singlePostData}/>
+            <ReportPostmodal singlePostData={singlePostData} />
         </>
     )
 }

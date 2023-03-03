@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
-import { PostDeleteModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { ErrorModalOpen, PostDeleteModalOpen } from '../../../../../services/Reducers/UserReducer';
 import { Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { delete_post } from '../../../../../services/Api/userPost/postsApi';
@@ -37,7 +37,7 @@ export default function BasicModal({ singlePostData }: any) {
         dispatch(PostDeleteModalOpen(false))
       }
     } catch (error) {
-      console.log(error, 'postdeleteerror')
+      dispatch(ErrorModalOpen(true))
     }
   }
 

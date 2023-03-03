@@ -6,11 +6,10 @@ import { EditProfileModalOpen } from '../../../../../services/Reducers/UserReduc
 import { Stack } from '@mui/joy';
 import Textarea from '@mui/joy/Textarea';
 import AddProfilePic from './addProfilePic/AddProfilePic';
-import { useEffect, useState, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { add_profile_image, edit_user_profile } from '../../../../../services/Api/user/userApi';
 import { UserContext } from '../../../../../context/userContext';
 // @ts-ignore
-import validate from 'neo-form-validations';
 
 
 const style = {
@@ -27,7 +26,6 @@ const style = {
 function EditProfileModal(currentInfo: any) {
     const dispatch = useDispatch()
     const { user } = useContext(UserContext)
-    const [currentProfilePic, setCurrentProfilePic] = useState()
     const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
     const form = useSelector((state: any) => state.userData.value.profileFormdata)
     const [userDetails, setUserDetails] = useState({
@@ -57,11 +55,6 @@ function EditProfileModal(currentInfo: any) {
     // HANDLING SAVE CHANGES //
 
     const handleSubmit = async (e: any) => {
-
-        // const { username, email, phone, bio } = userDetails
-        // if (username === '' && email === '' && phone === '' && bio === '') {
-        //      dispatch(EditProfileModalOpen(false))
-        // }else{}
         try {
             const Data = new FormData();
             for (let key in form) {
@@ -70,17 +63,13 @@ function EditProfileModal(currentInfo: any) {
             Data.append('user', user?.id)
             const { Images } = form
             if (Images) {
-                const ProfileImageUploadResponse = await add_profile_image(Data)
-                console.log(ProfileImageUploadResponse, 'ProfileImageUploadResponse')
+                await add_profile_image(Data)
             }
         } catch (error) {
             console.log(error, 'error fromupload')
         }
-        console.log(form, 'formmmm')
         const userId = currentInfo?.currentInfo?._id
-        console.log(userId, userDetails, 'from edit from submit')
-        const submitResponse = await edit_user_profile(userId, userDetails)
-        console.log(submitResponse, 'submitResponse')
+        await edit_user_profile(userId, userDetails)
         dispatch(EditProfileModalOpen(false))
         e.preveventDefault()
     }

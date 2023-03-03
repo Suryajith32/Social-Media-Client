@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, IconButton } from "@mui/material"
+import { Avatar, Box,  IconButton } from "@mui/material"
 import { Stack } from "@mui/system"
 import Typography from "@mui/material/Typography";
 import CreatePostModal from '../CreatePostModal'

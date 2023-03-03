@@ -12,6 +12,9 @@ const initialValue = {
     isFollowingFollowersListModalOpen:false,
     isChatOpen:false,
     isOtpModalOpen:false,
+    isNotifyUpdate:false,
+    profileCardUpdate:false,
+    isErrorModalOpen:false,
 }
 
 const userSlice = createSlice({
@@ -53,6 +56,15 @@ const userSlice = createSlice({
         },
         OtpModalOpen: (state, action) => {
             state.value.isOtpModalOpen = action.payload
+        },
+        NotifyUpdate: (state, action) => {
+            state.value.isNotifyUpdate = action.payload
+        },
+        ProfileCardUpdate: (state, action) => {
+            state.value.profileCardUpdate = action.payload
+        },
+        ErrorModalOpen: (state, action) => {
+            state.value.isErrorModalOpen = action.payload
         }
     }
 })
@@ -68,6 +80,9 @@ export const {
     EditProfileModalOpen,
     FollowFollowingModalOpen,
     ChatBoxOpen,
-    OtpModalOpen
+    OtpModalOpen,
+    NotifyUpdate,
+    ProfileCardUpdate,
+    ErrorModalOpen
 } = userSlice.actions;
 export default userSlice.reducer;

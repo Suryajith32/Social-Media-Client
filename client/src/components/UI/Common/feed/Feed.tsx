@@ -1,10 +1,9 @@
 import { Box } from "@mui/system"
 import CreatePost from "../createPostModal/createPost/CreatePost"
 import Posts from "../posts/Posts"
-import BottomNav from '../../SmallScreen/bottomNav/BottomNav'
 
 
-function Feed() {
+function Feed({socketio}:any) {
   return (
     <div>
       <Box>
@@ -12,8 +11,7 @@ function Feed() {
           <CreatePost />
         </Box>
         <Box sx={{ mt: 2}}>
-        {/* <BottomNav/> */}
-          <Posts />
+          <Posts socketio={socketio}/>
         </Box>
       </Box>
     </div>

@@ -1,20 +1,14 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { OtpModalOpen, ReportPostModalOpen } from '../../../../../services/Reducers/UserReducer';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import { report_post } from '../../../../../services/Api/userPost/postsApi';
 import { UserContext } from '../../../../../context/userContext';
 import { useForm } from 'react-hook-form';
-import { sign_up_user, user_reset_password, user_verify_signup_otp } from '../../../../../services/Api/user/userApi';
+import { sign_up_user, user_verify_signup_otp } from '../../../../../services/Api/user/userApi';
 import { useNavigate } from 'react-router-dom';
+import { ErrorModalOpen } from '../../../../../services/Reducers/UserReducer';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -32,17 +26,10 @@ export default function OtpModal(userDetails: any) {
     const { register, formState: { errors }, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const { user } = useContext(UserContext)
-    const [text, setText] = React.useState<string>('')
     const [incorrectOtp, setIncorrectOtp] = React.useState<boolean>(false)
     const [otpCheck, setOtp] = React.useState<any>({
         otp: '',
     })
-    console.log(userDetails?.user, 'userDetails from otp modal')
-
-    // const handleClose = () => {
-    //     dispatch(OtpModalOpen(false))
-    // };
 
     // HANDLING OTP VALUES //
 
@@ -55,11 +42,9 @@ export default function OtpModal(userDetails: any) {
     }
 
     const onSubmit = async () => {
-        console.log(otpCheck, 'otpcheck')
         const { username, email, phone, password } = userDetails?.user
         try {
             const verifySignUp = await user_verify_signup_otp(otpCheck)
-            console.log(verifySignUp, 'verifySignUp')
             if (verifySignUp === 'incorrect otp') {
                 setIncorrectOtp(true)
             }
@@ -67,17 +52,14 @@ export default function OtpModal(userDetails: any) {
                 if (username && email && phone && password) {
                     let signup = await sign_up_user(userDetails?.user)
                     if (signup === "User exist") {
-                        // setUserExist(!userExist)
                         navigate('/signup')
                     }else if (signup === "No user exist") {
                         navigate('/login')
                     }
                 }
-                // navigate('/login')
             }
         } catch (error) {
-            console.log(error, "otp error")
-            // navigate('error')
+            dispatch(ErrorModalOpen(true))
         }
     }
 

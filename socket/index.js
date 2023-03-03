@@ -51,6 +51,19 @@ io.on("connection", (socket) => {
         text,                   
     })
   }) 
+
+  socket.on("sendNotification", data => {
+    console.log(data,'from liked post');
+    const { receiverId, username, type, userDp, read, time } = data
+    io.to(users[receiverId]).emit("getNotification", {
+        username,
+        type,
+        userDp,
+        read,
+        time
+    })
+
+})
       
               
   socket.on("disconnect",()=>{

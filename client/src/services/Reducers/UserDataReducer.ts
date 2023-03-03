@@ -8,7 +8,8 @@ const initialValue = {
     profileInformation:{},
     profileFormdata:{},
     usersProfileData:{},
-    currentChatData:{}
+    currentChatData:{},
+    snackBarMessage:'heyyy'
 }
 
 const userDataSlice = createSlice({
@@ -40,6 +41,9 @@ const userDataSlice = createSlice({
         },
         CurrentChatData: (state, action) => {
             state.value.currentChatData = action.payload
+        },
+        SnackBarMessage: (state, action) => {
+            state.value.snackBarMessage = action.payload
         }
     }
 })
@@ -52,6 +56,7 @@ export const {
     ProfileInfo,
     ProfileFormData,
     UsersProfileData,
-    CurrentChatData
+    CurrentChatData,
+    SnackBarMessage
 } = userDataSlice.actions;
 export default userDataSlice.reducer;

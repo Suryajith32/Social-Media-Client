@@ -16,23 +16,22 @@ import UsersProfile from '../pages/usersProfile/UsersProfile'
 import AdminHome from '../pages/admin/adminHome/AdminHome'
 import jwtDecode from 'jwt-decode'
 import { useEffect,useContext } from 'react'
+import Users from '../pages/admin/users/Users'
+import Posts from '../pages/admin/posts/Posts'
 
-// const socketio = require('socket.io-client')("ws://localhost:8000")
+const socketio = require('socket.io-client')("ws://localhost:8000")
 
 
 function Routings() {
-
-  const data:any = localStorage.getItem('token')
-  const user:any = jwtDecode(data)
-  // if (data != null) {
-  //     const user:any = jwtDecode(data)
-    
-  // }
-
+ const data:any = localStorage.getItem('token')
   useEffect(() => {
-console.log(user,'user from routings')
+    if (data != null) {
+        const user:any = jwtDecode(data)
+      console.log(user,'user from routings')
     
-    // socketio?.emit("addUser", user?.id,user?.name)
+    socketio?.emit("addUser", user?.id,user?.name)
+    }
+
 }, [])
   return (
     <div>
@@ -47,15 +46,19 @@ console.log(user,'user from routings')
             <Route path='*' element={<Error />} />
 
             <Route path='/' element={<Home />} >
-              <Route path='/' element={<Feed />} />
+              <Route path='/' element={<Feed socketio={socketio}/>} />
               <Route path='profile' element={<UserProfile />} />
               <Route path='users-profile' element={<UsersProfile />} />
               <Route path='notification' element={<Notification />} />
-              <Route path='inbox' element={<Messages/>} />
+              <Route path='inbox' element={<Messages socketio={socketio}/>} />
             </Route>
 
             <Route path='admin-login'  element={<AdminLogin/>}/>
-            <Route path='admin' element ={<AdminHome/>}/>
+            <Route path='admin' element ={<AdminHome/>}>
+            <Route path='usermanagement'  element={<Users/>}/>
+            <Route path='postmanagement' element={<Posts/>}/>
+
+            </Route>
           </Routes>
           </User>
       </Router>

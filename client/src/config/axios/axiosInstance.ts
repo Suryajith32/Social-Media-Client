@@ -16,4 +16,5 @@ export default  {
     get:instance.get,
     post:instance.post,
     delete:instance.delete,
+    patch:instance.patch,
 }

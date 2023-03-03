@@ -15,6 +15,7 @@ router.post('/unblock/:id',adminController.UnblockUser)
 
 router.get('/viewposts',adminController.viewPost)
 
+
 router.get('/reportdetails/:id',adminController.postReportDetails)
 
 router.post('/reportpost/:id',adminController.reportPost)

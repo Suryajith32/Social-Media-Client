@@ -1,4 +1,3 @@
-import { AnyAaaaRecord } from "dns";
 import axiosInstance from "../../../config/axios/axiosInstance";
 
 // ADD POST //

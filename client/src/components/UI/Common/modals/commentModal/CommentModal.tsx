@@ -2,7 +2,7 @@ import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import { useSelector, useDispatch } from 'react-redux';
-import { CommentModalOpen, DeleteCommentModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { CommentModalOpen, DeleteCommentModalOpen, ErrorModalOpen, NotifyUpdate, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import { AspectRatio, Avatar, Box, Container, Stack } from '@mui/joy';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { format, } from 'timeago.js';
@@ -12,16 +12,13 @@ import Textarea from '@mui/joy/Textarea';
 import Menu from '@mui/joy/Menu';
 import MenuItem from '@mui/joy/MenuItem';
 import { UserContext } from '../../../../../context/userContext';
-import axiosInstance from '../../../../../config/axios/axiosInstance';
 import Paper from '@mui/material/Paper';
 import styled from '@emotion/styled';
 import { Grid } from '@mui/material';
-import Divider from '@mui/joy/Divider';
-import Modal1 from '@mui/joy/Modal';
-import ModalDialog from '@mui/joy/ModalDialog';
-import Typography1 from '@mui/joy/Typography';
 import DeleteCommentModal from './DeleteCommentModal'
 import { add_comments, get_comments } from '../../../../../services/Api/userPost/postsApi';
+import { create_notification } from '../../../../../services/Api/user/userApi';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 
 
 const style = {
@@ -43,8 +40,9 @@ const Image = styled('img')({
 });
 
 
-export default function KeepMountedModal({ singlePostData, userName }: any) {
-
+export default function KeepMountedModal({ singlePostData, userName, socketio }: any) {
+    const ProfileImage = useSelector((state: any) => state.userData.value.profileImage)
+    const notifyUpdate = useSelector((state: any) => state.user.value.isNotifyUpdate)
     const [change, setChange] = React.useState(false)
     const dispatch = useDispatch()
     const { user } = React.useContext(UserContext)
@@ -66,7 +64,6 @@ export default function KeepMountedModal({ singlePostData, userName }: any) {
 
     const handleClose = () => {
         dispatch(CommentModalOpen(false))
-        // setAnchorEl(null);
     }
 
     const handleCommentChange = (e: any) => {
@@ -92,27 +89,55 @@ export default function KeepMountedModal({ singlePostData, userName }: any) {
     const submitComment = async (event: any, postId: string, type: number) => {
         const userId = user.id
         const id = { userId, postId, comment }
+        let details = {
+            receiverId: singlePostData?.userId,
+            userName: user?.name,
+            type: "commented",
+            userDp: ProfileImage,
+            read: false
+        }
         try {
             const addCommentResponse = await add_comments(id)
-            if (addCommentResponse) {
+            if (addCommentResponse.msg === 'success') {
                 setComment('')
                 setChange(true)
+                socketio?.emit("sendNotification", details)
+                let commentDetails = {
+                    receiverId: singlePostData?.userId,
+                    senderId: userId,
+                    postId: postId,
+                    type: "commented",
+                }
+
+                // CREATING NOTIFICATION //
+
+                try {
+                    if (singlePostData?.userId !== userId) {
+                        await create_notification(commentDetails)
+                        dispatch(NotifyUpdate(!notifyUpdate))
+                        dispatch(SnackBarMessage('comment added'))
+                        dispatch(SnackBarOpen(true))
+                    }
+                } catch (error) {
+                    console.log(error, 'notification api error')
+                }
             }
         } catch (error) {
-
+            dispatch(ErrorModalOpen(true))
         }
-
     }
 
     const handleDeleteModal = (commentId: string) => {
-        //    console.log(commentId,'cmntid')
         const post_id = singlePostData?._id
         const id = { commentId, post_id }
-        console.log(id, 'from modalbefore confirm')
-        setCurrentCommentId(id)
-        dispatch(DeleteCommentModalOpen(true))
-        setOpen(true)
+        try {
+            setCurrentCommentId(id)
+            dispatch(DeleteCommentModalOpen(true))
+            setOpen(true)
+        } catch (error) {
+            dispatch(ErrorModalOpen(true))
 
+        }
     }
 
     return (

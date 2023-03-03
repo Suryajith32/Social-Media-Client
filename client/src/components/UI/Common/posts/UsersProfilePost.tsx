@@ -1,13 +1,3 @@
-// import React from 'react'
-
-// function UsersProfilePost() {
-//   return (
-//     <div>UsersProfilePost</div>
-//   )
-// }
-
-// export default UsersProfilePost
-
 import { AspectRatio, Box, Grid, } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -20,7 +10,6 @@ export default function UsersProfilePost() {
   const {user} = useContext(UserContext)
   const [posts, setPosts] = useState<any>()
   useEffect(() => {
-    console.log(user,'user from profile post')
     const id = user?.id
     getAllProfilePost()
   }, [])
@@ -28,7 +17,6 @@ export default function UsersProfilePost() {
   const getAllProfilePost = async () => {
     const fetchPostResponse = await get_profile_posts(usersData?._id)
     setPosts(fetchPostResponse)
-    console.log(fetchPostResponse, 'from profile post')
   }
 
   return (

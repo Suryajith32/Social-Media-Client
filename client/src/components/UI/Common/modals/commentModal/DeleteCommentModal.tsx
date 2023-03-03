@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
-import { DeleteCommentModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { DeleteCommentModalOpen, ErrorModalOpen } from '../../../../../services/Reducers/UserReducer';
 import { Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { delete_comment } from '../../../../../services/Api/userPost/postsApi';
@@ -32,13 +32,12 @@ export default function BasicModal(commentID: any) {
 
   const handleDeletePost = async () => {
   try {
-    console.log(commentID?.currentCommentId ,'fromconfirm delete comment')
     const deleteCommentRespone = await delete_comment(commentID?.currentCommentId)
     if(deleteCommentRespone?.msg){
       dispatch(DeleteCommentModalOpen(false))
     }
   } catch (error) {
-console.log(error)
+    dispatch(ErrorModalOpen(true))
   }
   }
 

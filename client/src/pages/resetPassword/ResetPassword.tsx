@@ -1,13 +1,15 @@
 import { Box, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { user_reset_password } from '../../services/Api/user/userApi'
+import { ErrorModalOpen } from '../../services/Reducers/UserReducer'
 
 function ResetPassword() {
 
     const { register, formState: { errors }, handleSubmit } = useForm()
-    const [error, setError] = useState(false)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [incorrectOtp, setIncorrectOtp] = useState(false)
     const [otpCheck, setOtp] = useState({
@@ -24,7 +26,6 @@ function ResetPassword() {
     }
 
     const onSubmit = async () => {
-        console.log(otpCheck, 'otpcheck')
         try {
             const resetPass = await user_reset_password(otpCheck)
             if (resetPass === 'incorrect otp') {
@@ -35,7 +36,7 @@ function ResetPassword() {
             }
         } catch (error) {
             console.log(error, "otp error")
-            navigate('error')
+            dispatch(ErrorModalOpen(true))
         }
     }
 

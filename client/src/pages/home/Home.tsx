@@ -7,8 +7,9 @@ import ProfileCard from '../../components/UI/LargeScreen/profileCard/ProfileCard
 import SuggestionCard from '../../components/UI/LargeScreen/suggestionCard/SuggestionCard'
 import FriendListCard from '../../components/UI/LargeScreen/friendListCard/FriendListCard'
 import BottomNav from '../../components/UI/SmallScreen/bottomNav/BottomNav'
-import PostSuccess from '../../components/UI/Common/snackBars/PostSuccess'
 import { auth_user } from '../../services/Api/user/userApi'
+import ErrorModal from '../../components/UI/Common/modals/errorModal/ErrorModal'
+import Success from '../../components/UI/Common/snackBars/Success'
 
 function Home() {
   const navigate = useNavigate()
@@ -71,7 +72,8 @@ function Home() {
           </Box>
         </Grid>
       </Box>
-      <PostSuccess />
+      <Success/>
+      <ErrorModal/>
     </div>
   )
 }

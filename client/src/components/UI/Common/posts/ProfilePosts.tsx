@@ -16,7 +16,6 @@ export default function StandardImageList() {
   const [userName, setUserName] = useState<any>()
   const dispatch = useDispatch()
   useEffect(() => {
-    console.log(user,'user from profile post')
     const id = user?.id
     getAllProfilePost(id)
   }, [])
@@ -24,7 +23,6 @@ export default function StandardImageList() {
   const getAllProfilePost = async (id:any) => {
     const fetchPostResponse = await get_profile_posts(id)
     setPosts(fetchPostResponse)
-    console.log(fetchPostResponse, 'from profile post')
   }
 
   // HANDLING POST CLICK //

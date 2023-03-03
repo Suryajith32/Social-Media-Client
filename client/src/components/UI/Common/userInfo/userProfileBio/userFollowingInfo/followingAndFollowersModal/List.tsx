@@ -1,15 +1,12 @@
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import { Stack } from '@mui/system';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { FollowFollowingModalOpen } from '../../../../../../../services/Reducers/UserReducer';
+import { ErrorModalOpen, FollowFollowingModalOpen } from '../../../../../../../services/Reducers/UserReducer';
 import Avatar from '@mui/material/Avatar/Avatar';
 import IconButton from '@mui/material/IconButton';
 import { useState, useEffect } from 'react'
-import { view_all_following } from '../../../../../../../services/Api/user/userApi';
 import axiosInstance from '../../../../../../../config/axios/axiosInstance';
 import { UsersProfileData } from '../../../../../../../services/Reducers/UserDataReducer';
 import { useNavigate } from 'react-router-dom';
@@ -27,16 +24,11 @@ const style = {
 };
 
 export default function BasicModal(title: any,) {
-    const [dataList, setDataList] = useState<any>()
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [following, setFollowing] = useState<any>()
     const [viewFollowing,setViewFollowing] = useState<any>()
     const isOpenFolloList = useSelector((state: any) => state.user.value.isFollowingFollowersListModalOpen);
-    console.log(title, ' title')
-
-   
-
 
     const handleClose = () => {
         dispatch(FollowFollowingModalOpen(false))
@@ -49,26 +41,22 @@ export default function BasicModal(title: any,) {
        // FOLLOWING A USER //
 
        const Follow = async (friendId: any) => {
-        console.log(viewFollowing,'viewAllFollowingRespone')
         const userId = title?.user
         const id = { userId, friendId }
-        console.log(id, 'this is both')
         await axiosInstance.post("/follow", id, {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
             },
         }).then((response) => {
-            console.log(response, 'response from follow click')
             setFollowing(response?.data?.msg)
         }).catch((err) => {
-            console.log(err, 'from Follow')
+            dispatch(ErrorModalOpen(true))
         })  
     }
 
      // HANDLING NAVIGATION TO USERS PROFILE //
 
      const handleClickUser = (item:any) => {
-        console.log(item,'item from listttt')
         dispatch(UsersProfileData(item))
         navigate('users-profile')
     }

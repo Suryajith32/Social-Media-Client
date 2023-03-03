@@ -170,7 +170,7 @@ export const conversation_start = (id: any) => {
 
 // GET CONVERSATION //
 
-export const get_conversation = (userId:any) => {
+export const get_conversation = (userId: any) => {
     return axiosInstance.get("/conversation/" + userId, {
         headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -180,7 +180,7 @@ export const get_conversation = (userId:any) => {
 
 // GET CHAT USERS //
 
-export const get_chat_users = (friendId:any) => {
+export const get_chat_users = (friendId: any) => {
     return axiosInstance.get("/chatusers/" + friendId, {
         headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -190,10 +190,48 @@ export const get_chat_users = (friendId:any) => {
 
 // GET MESSAGES // 
 
-export const get_messages = (_id:any) => {
+export const get_messages = (_id: any) => {
     return axiosInstance.get("/message/" + _id, {
         headers: {
             "x-access-token": localStorage.getItem("token"),
         },
+    }).then((response) => response.data)
+}
+
+// DO NOTIFICATION //
+
+export const create_notification = (Data: any) => {
+    return axiosInstance.post(`/addnotification`, Data)
+        .then((response) => response.data)
+}
+
+// GET NOTIFICATION //
+
+export const get_notification = () => {
+    return axiosInstance.get('/getnotifications', {
+        headers: {
+            "x-access-token": localStorage.getItem("token"),
+        }
+    })
+        .then((response) => response.data)
+}
+
+// UPDATE NOTIFICATION READ STATE //
+
+export const update_notification = (data: any) => {
+    return axiosInstance.patch('/updatenotifications/' + data, {
+        headers: {
+            "x-access-token": localStorage.getItem("token"),
+        }
+    }).then((response) => response.data)
+}
+
+// FETCHING UNREAD NOTIFICATION COUNT //
+
+export const get_notification_count = () => {
+    return axiosInstance.get('/getnotificationscount', {
+        headers: {
+            "x-access-token": localStorage.getItem("token"),
+        }
     }).then((response) => response.data)
 }

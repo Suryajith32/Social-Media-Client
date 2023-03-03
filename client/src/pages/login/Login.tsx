@@ -1,16 +1,19 @@
 import { Container } from '@mui/material'
-import { useState, useEffect } from 'react'
+import { useState,  } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { Link } from 'react-router-dom'
 import './login.css'
 import { useNavigate } from 'react-router-dom'
-import { auth_user, login_user } from '../../services/Api/user/userApi'
+import {  login_user } from '../../services/Api/user/userApi'
+import { useDispatch } from 'react-redux'
+import { ErrorModalOpen } from '../../services/Reducers/UserReducer'
 
 function Login() {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [isUserExist, setIsUserExist] = useState(false)
     const [isBlockedUser, setIsBlockedUser] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
@@ -66,7 +69,7 @@ function Login() {
                 }
             }
         } catch (err) {
-            navigate('/error')
+          dispatch(ErrorModalOpen(true))
         }
     }
 
