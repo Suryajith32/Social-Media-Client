@@ -53,7 +53,7 @@ function Login() {
             const login = await login_user(user)
             if (login.auth) {
                 localStorage.setItem("token", login.token)
-                navigate('/')
+                navigate('home')
             } else {
                 if (login.message === "Wrong username password") {
                     setIsUserExist(true)

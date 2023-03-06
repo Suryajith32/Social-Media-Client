@@ -39,14 +39,14 @@ function Routings() {
       <User>
           <Routes>
             <Route path='signup' element={<Signup />} />
-            <Route path='login' element={<Login />} />
+            <Route path='/' element={<Login />} />
             <Route path='forgot-password' element={<ForgotPassword />} />
             <Route path='reset-password' element={<ResetPassword />} />
             <Route path='error' element={<InternalServerError />} />
             <Route path='*' element={<Error />} />
 
-            <Route path='/' element={<Home />} >
-              <Route path='/' element={<Feed socketio={socketio}/>} />
+            <Route path='home' element={<Home />} >
+              <Route path='home' element={<Feed socketio={socketio}/>} />
               <Route path='profile' element={<UserProfile />} />
               <Route path='users-profile' element={<UsersProfile />} />
               <Route path='notification' element={<Notification />} />
