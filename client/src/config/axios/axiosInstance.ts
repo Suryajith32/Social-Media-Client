@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL:"http://localhost:4000"
+    baseURL:"https://go-socialize.onrender.com"
+    // baseURL:"http://localhost:4000"
 })
 axios.interceptors.request.use(
     function(config){
