@@ -17,6 +17,6 @@ mongoose.connect(process.env.DATABASE_ACCESS,()=>console.log('Database is connec
 
 app.use('/',userRouter)
 app.use('/admin',adminRoute)
-app.use('/api/images',express.static('./public/Images'))
+app.use('/api/images',express.static('./public/images'))
 
 app.listen(process.env.PORT||4000,()=>console.log("server is connected"))
