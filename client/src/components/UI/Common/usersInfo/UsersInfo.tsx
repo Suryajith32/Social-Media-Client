@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../../../../context/userContext'
+import postsImages from '../../../../services/Api/user/imageApi'
 import { conversation_start, follow_status_check, follow_user, get_follow_count, view_all_following } from '../../../../services/Api/user/userApi'
 import { ErrorModalOpen } from '../../../../services/Reducers/UserReducer'
 function UsersInfo() {
@@ -86,7 +87,7 @@ function UsersInfo() {
         {usersData?.Images ?
           <Avatar
             alt="Remy Sharp"
-            src={`/images/${usersData?.Images}`}
+            src={`${postsImages}/${usersData?.Images}`}
             sx={{ width: 130, height: 130 }}
           /> : <Avatar
             alt="Remy Sharp"

@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { BlockUserModalOpen } from '../../../../../services/Reducers/AdminReducer';
 import Avatar from '@mui/material/Avatar';
 import { admin_block_user, admin_unblock_user } from '../../../../../services/Api/admin/adminApi';
+import postsImages from '../../../../../services/Api/user/imageApi';
 
 
 const style = {
@@ -74,7 +75,7 @@ export default function DeleteUserModal({ singleUserData }: any) {
                                 <Stack display='flex' direction='row' spacing={2}>
                                     <Box>
                                         {singleUserData?.Images ?
-                                            <Avatar src={`/images/${singleUserData?.Images}`} /> :
+                                            <Avatar src={`${postsImages}/${singleUserData?.Images}`} /> :
                                             <Avatar src='' />
                                         }
                                     </Box>

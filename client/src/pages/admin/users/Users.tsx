@@ -13,6 +13,7 @@ import Button from '@mui/material/Button';
 import DeleteUserModal from '../../../components/UI/Admin/modal/blockUserModal/BlockUserModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { BlockUserModalOpen } from '../../../services/Reducers/AdminReducer';
+import postsImages from '../../../services/Api/user/imageApi';
 
 
 export default function Users() {
@@ -65,7 +66,7 @@ export default function Users() {
                                     </TableCell>
                                     <TableCell align="right">
                                         {row?.Images ?
-                                            <Avatar src={`/images/${row?.Images}`} /> :
+                                            <Avatar src={`${postsImages}/${row?.Images}`} /> :
                                             <Avatar src='' />
                                         }
                                     </TableCell>

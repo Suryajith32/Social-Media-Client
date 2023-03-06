@@ -19,6 +19,7 @@ import DeleteCommentModal from './DeleteCommentModal'
 import { add_comments, get_comments } from '../../../../../services/Api/userPost/postsApi';
 import { create_notification } from '../../../../../services/Api/user/userApi';
 import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
+import postsImages from '../../../../../services/Api/user/imageApi';
 
 
 const style = {
@@ -43,6 +44,7 @@ const Image = styled('img')({
 export default function KeepMountedModal({ singlePostData, userName, socketio }: any) {
     const ProfileImage = useSelector((state: any) => state.userData.value.profileImage)
     const notifyUpdate = useSelector((state: any) => state.user.value.isNotifyUpdate)
+    const isCommentDeleteUpdate = useSelector((state:any) => state.user.value.isCommentUpdate)
     const [change, setChange] = React.useState(false)
     const dispatch = useDispatch()
     const { user } = React.useContext(UserContext)
@@ -82,7 +84,7 @@ export default function KeepMountedModal({ singlePostData, userName, socketio }:
     }
     React.useEffect(() => {
         getAllComments()
-    }, [singlePostData, change])
+    }, [singlePostData, change,isCommentDeleteUpdate])
 
     // POSTING COMMENT //
 
@@ -167,7 +169,7 @@ export default function KeepMountedModal({ singlePostData, userName, socketio }:
                                                 </Box>
                                                 <AspectRatio sx={{ width: '100%', }}>
                                                     <Image
-                                                        src={`/images/${singlePostData?.Images}`}
+                                                        src={`${postsImages}/${singlePostData?.Images}`}
                                                         alt=""
                                                     />
                                                 </AspectRatio>

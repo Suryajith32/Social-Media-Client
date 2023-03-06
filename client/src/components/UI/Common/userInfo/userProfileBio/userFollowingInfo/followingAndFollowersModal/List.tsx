@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react'
 import axiosInstance from '../../../../../../../config/axios/axiosInstance';
 import { UsersProfileData } from '../../../../../../../services/Reducers/UserDataReducer';
 import { useNavigate } from 'react-router-dom';
+import postsImages from '../../../../../../../services/Api/user/imageApi';
 
 
 const style = {
@@ -84,7 +85,7 @@ export default function BasicModal(title: any,) {
                                                 <Stack display='flex' direction='row' spacing={3} alignItems='center'>
                                                     {item?.list?.Images ?
                                                         <Avatar
-                                                        src={`/images/${item?.list?.Images}`}
+                                                        src={`${postsImages}/${item?.list?.Images}`}
                                                         /> :
                                                         <Avatar
                                                         src=''
@@ -122,7 +123,7 @@ export default function BasicModal(title: any,) {
                                                 {item?.list?.Images ?
                                                     <Avatar
                                                     sx={{ width: 50, height: 50 }}
-                                                    src={`/images/${item?.list?.Images}`}
+                                                    src={`${postsImages}/${item?.list?.Images}`}
                                                     /> :
                                                     <Avatar
                                                     sx={{ width: 50, height: 50 }}

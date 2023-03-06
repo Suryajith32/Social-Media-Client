@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import {UsersProfileData} from '../../../../services/Reducers/UserDataReducer'
 import { ErrorModalOpen, ProfileCardUpdate } from '../../../../services/Reducers/UserReducer'
+import postsImages from '../../../../services/Api/user/imageApi'
 
 function SuggestionCard() {
     const { user } = useContext(UserContext)
@@ -91,7 +92,7 @@ function SuggestionCard() {
                     <Box key={index} sx={{ mr: 3, ml: 3, mt: 3 }} >
                         {item?._id === user?.id || viewFollowing?.includes(item?._id)? '' : <Stack display='flex' direction='row' justifyContent='space-between'>
                             <Box onClick={()=>handleClickUser(item)} >
-                                {item?.Images ? <Avatar src={`/images/${item?.Images}`} /> : <Avatar src='' />}
+                                {item?.Images ? <Avatar src={`${postsImages}/${item?.Images}`} /> : <Avatar src='' />}
                             </Box>
                             <Box onClick={()=>handleClickUser(item)} sx={{ color: '#FFFFFF', mt: 1.2 }}>
                                 <Typography fontWeight={480} sx={{ fontVariant: 'h8' }}>{item?.username}</Typography>

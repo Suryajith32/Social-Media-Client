@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { PostModalOpen } from '../../../../../services/Reducers/UserReducer'
 import AddAPhotoOutlinedIcon from '@mui/icons-material/AddAPhotoOutlined';
 import EmojiEmotionsOutlinedIcon from '@mui/icons-material/EmojiEmotionsOutlined';
+import postsImages from "../../../../../services/Api/user/imageApi";
 
 function CreatePost() {
     const ProfileImage = useSelector((state: any) => state.userData.value.profileImage)
@@ -18,7 +19,7 @@ function CreatePost() {
                     <Box>
                         {ProfileImage ? <Avatar
                             alt="Remy Sharp"
-                            src={`/images/${ProfileImage}`}
+                            src={`${postsImages}/${ProfileImage}`}
                             sx={{ width: 45, height: 45 }}
                         /> : <Avatar
                             alt="Remy Sharp"

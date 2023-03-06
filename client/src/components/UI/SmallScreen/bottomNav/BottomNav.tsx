@@ -13,11 +13,13 @@ import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNone
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {useEffect} from 'react'
+import { useDispatch } from 'react-redux';
+import { PostModalOpen } from '../../../../services/Reducers/UserReducer';
 
 export default function LabelBottomNavigation() {
   const [value, setValue] = useState<any>();
   const [pathname, setPathName] = useState<any>()
-
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export default function LabelBottomNavigation() {
     if(newValue === 0){
       navigate('/')
     } else if(newValue === 1){
-
+      dispatch(PostModalOpen(true))
     }else if(newValue === 2){
       navigate('notification')
     }else if(newValue === 3){

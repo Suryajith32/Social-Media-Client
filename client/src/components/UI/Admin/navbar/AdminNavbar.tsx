@@ -30,10 +30,6 @@ function AdminNavbar() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-    const handleProfile = () => {
-        navigate('')
-    }
     const handleLogout = () => {
         localStorage.removeItem('token')
         navigate('/admin-login')
@@ -66,10 +62,6 @@ function AdminNavbar() {
                                {/* //SEARCH BAR// */}
 
                                {/* <SearchBar/> */}
-
-                                <NavLink to='/'><Box sx={{ color: '#009EFF', display: { md: 'block', sm: 'block', xs: 'none' } }}>
-                                   { pathname === '/'? <HomeIcon sx={{ fontSize: "30px", }} />:<HomeOutlinedIcon sx={{ fontSize: "30px", }}/>}
-                                </Box></NavLink>
                             </Stack>
                         </Box>
                         <Box sx={{ mr: 3, }}>
@@ -127,9 +119,6 @@ function AdminNavbar() {
                                             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                                             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                                         >
-                                            <MenuItem onClick={handleProfile}>
-                                                <Avatar /> Profile
-                                            </MenuItem>
                                             <MenuItem>
                                                 <Avatar /> My account
                                             </MenuItem>

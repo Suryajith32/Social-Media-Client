@@ -8,6 +8,7 @@ import ProfileCardSkelton from '../../../skelton/ProfileCardSkelton';
 import { useDispatch, useSelector } from 'react-redux';
 import { CurrentUserId, ProfileImage } from '../../../../services/Reducers/UserDataReducer';
 import jwtDecode from 'jwt-decode';
+import postsImages from '../../../../services/Api/user/imageApi';
 
 
 function ProfileCard() {
@@ -76,7 +77,7 @@ function ProfileCard() {
           {currentUserData && currentUserData?.map((item: any, index: number) => (
             <Box key={index}>
              <Box display='flex' justifyContent='center' sx={{ maxWidth: '100%', pt: 2 }}>
-                {item.Images ? <Avatar sx={{ width: 75, height: 75 }} src={`/images/${item?.Images}`} /> :
+                {item.Images ? <Avatar sx={{ width: 75, height: 75 }} src={`${postsImages}/${item?.Images}`} /> :
                   <Avatar sx={{ width: 75, height: 75 }} src='' />}
               </Box>
               <Box display='flex' justifyContent='center' sx={{ color: '#FFFFFF', maxWidth: '100%' }}>

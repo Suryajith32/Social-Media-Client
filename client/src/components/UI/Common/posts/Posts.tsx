@@ -25,6 +25,7 @@ import { like_user_post, user_post_details, get_all_posts } from '../../../../se
 import NoPosts from '../../../skelton/NoPosts';
 import { create_notification } from '../../../../services/Api/user/userApi';
 import { SnackBarMessage } from '../../../../services/Reducers/UserDataReducer';
+import postsImages from '../../../../services/Api/user/imageApi';
 
 function Posts({ socketio }: any) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -184,7 +185,7 @@ function Posts({ socketio }: any) {
                                                     {item.userId.Images ?
                                                         <Avatar
                                                             alt="Remy Sharp"
-                                                            src={`/images/${item?.userId?.Images}`}
+                                                            src={`${postsImages}/${item?.userId?.Images}`}
                                                             sx={{ width: 55, height: 55 }}
                                                         /> :
                                                         <Avatar
@@ -228,7 +229,7 @@ function Posts({ socketio }: any) {
                                                                 'aria-labelledby': 'basic-button',
                                                             }}
                                                         >
-                                                            <MenuItem onClick={() => OpenReportPostModal(item)}>{item?.userId?.username}</MenuItem>
+                                                            {item?.userId?._id === user?.id ? "": <MenuItem onClick={() => OpenReportPostModal(item)}>Report</MenuItem>}
                                                             {item?.userId?._id === user?.id ? <MenuItem onClick={() => OpendeletePostModal(item)}>Delete</MenuItem> : ''}
                                                             {item?.userId?._id === user?.id ? <MenuItem onClick={() => OpenEditPostModaal(item)}>Edit</MenuItem> : ''}
                                                         </Menu>
@@ -246,7 +247,7 @@ function Posts({ socketio }: any) {
                                         </Container>
                                         <Box sx={{ minWidth: '100%', maxWidth: '100%', height: '40vh', bgcolor: '#FFFFFF', mt: 1, borderRadius: '14px', }}>
                                             <AspectRatio minHeight='40vh' maxHeight='40vh' >
-                                                <img className='post-image' src={`/images/${item.Images}`} />
+                                                <img className='post-image' src={`${postsImages}/${item.Images}`} />
                                             </AspectRatio>
                                         </Box>
                                         <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' sx={{ width: '88%', height: '9.2vh', mt: 1, color: '#FFFFFF', ml: 4, mr: 6, }}>
@@ -266,9 +267,9 @@ function Posts({ socketio }: any) {
                                             <Box>
                                                 <IconButton onClick={() => handleCommentModal(item?._id, item?.userId.username)} sx={{ color: '#FFFFFF' }}>
                                                     <InsertCommentOutlinedIcon />
-                                                    <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}> {!item?.comment[0]?.comment ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
+                                                    <Box sx={{ pl: 2, display: { md: 'block', lg: 'block', sm: 'block', xs: 'none' } }}><Typography fontSize={13}> {!item?.comment[0]?.comment ||item?.comment[0]?.comment?.length === 0 ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
                                                 </IconButton>
-                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{!item?.comment[0]?.comment ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
+                                                <Box sx={{ display: { md: 'none', lg: 'none', sm: 'none', xs: 'block' } }}><Typography fontSize={13}>{!item?.comment[0]?.comment ||item?.comment[0]?.comment?.length === 0 ? 'comments' : item?.comment[0]?.comment?.length + 'comment'}</Typography></Box>
                                             </Box>
                                             <Box>
                                                 {/* <IconButton sx={{ color: '#FFFFFF' }}>

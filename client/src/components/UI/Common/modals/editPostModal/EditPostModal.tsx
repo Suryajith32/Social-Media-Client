@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { EditPostModalOpen, ErrorModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { EditPostModalOpen, ErrorModalOpen, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button, FormControl, Textarea } from '@mui/joy';
 import { edit_post } from '../../../../../services/Api/userPost/postsApi';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -42,6 +43,8 @@ export default function BasicModal(selectedPostData: any) {
         try {
             const postId = selectedPostData?.singlePostData?._id
             const editResponse = await edit_post(postId, caption)
+            dispatch(SnackBarMessage('changes saved'))
+            dispatch(SnackBarOpen(true))
             dispatch(EditPostModalOpen(false))
         } catch (error) {
             dispatch(ErrorModalOpen(true))

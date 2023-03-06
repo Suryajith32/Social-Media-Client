@@ -9,6 +9,7 @@ import { format } from 'timeago.js'
 import { useDispatch, useSelector } from 'react-redux'
 import { ErrorModalOpen, NotifyUpdate } from '../../services/Reducers/UserReducer'
 import TagFacesTwoToneIcon from '@mui/icons-material/TagFacesTwoTone';
+import postsImages from '../../services/Api/user/imageApi'
 
 function Notification() {
     const notifyUpdate = useSelector((state: any) => state.user.value.isNotifyUpdate)
@@ -59,7 +60,7 @@ function Notification() {
                                             {item?.triggeredUser?.Images ?
                                                 <Avatar
                                                     alt="Remy Sharp"
-                                                    src={`/images/${item?.triggeredUser?.Images}`}
+                                                    src={`${postsImages}/${item?.triggeredUser?.Images}`}
                                                     sx={{ width: 56, height: 56 }}
                                                 /> :
                                                 <Avatar

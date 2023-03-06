@@ -9,6 +9,7 @@ import { get_conversation } from '../../../../services/Api/user/userApi'
 import { CurrentChatData } from '../../../../services/Reducers/UserDataReducer'
 import { Stack, Typography } from '@mui/material'
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
+import jwtDecode from 'jwt-decode'
 
 
 function InBox({ socket }: any) {
@@ -16,7 +17,24 @@ function InBox({ socket }: any) {
   const dispatch = useDispatch()
   const { user } = useContext(UserContext)
   const [conversation, setConversation] = useState<any>()
+  const [onlineUsers, setOnlineUsers] = useState<any[]>([])
   console.log(socket, 'socket io from Inbox')
+
+  if (user) {
+    var userId = user.id
+  }
+  const socketio = require('socket.io-client')("ws://localhost:8000")
+  useEffect(() => {
+    socketio?.emit("addUser", user?.id, user?.name)
+  }, [user?.id])
+
+  useEffect(() => {
+    socketio?.on("getUsers", (users: any) => {
+      setOnlineUsers(users)
+      console.log(users, 'users socket ioooo')
+    })
+  })
+
 
 
   // HANDLING CHAT OPEN //
@@ -31,15 +49,16 @@ function InBox({ socket }: any) {
     GetAllConversation(user?.id)
   }, [user])
 
+
   // FETCHING CONVERSATION //
 
   const GetAllConversation = async (userId: any) => {
     try {
       const getConversationResponse = await get_conversation(userId)
       setConversation(getConversationResponse)
-      console.log(getConversationResponse,'from checkuser controler')
+      console.log(getConversationResponse, 'from checkuser controler')
     } catch (error) {
-     
+
     }
   }
 
@@ -47,12 +66,12 @@ function InBox({ socket }: any) {
   return (
     <>
       {conversation?.length === 0 ?
-        <Box display='flex'  justifyContent='center' sx={{width:'100%' , height:'40vh'}}>
+        <Box display='flex' justifyContent='center' sx={{ width: '100%', height: '40vh' }}>
           <Stack display='flex' direction='column' justifyContent='center' >
             <Box>
               <Typography variant='h4' sx={{ color: 'grey' }}>no conversation's yet</Typography>
             </Box>
-            <Box display='flex'  alignItems='center' justifyContent='center'>
+            <Box display='flex' alignItems='center' justifyContent='center'>
               <CommentsDisabledIcon sx={{ color: 'grey' }} />
             </Box>
           </Stack>
@@ -63,11 +82,11 @@ function InBox({ socket }: any) {
             <Box>
               {conversation && conversation?.map((userlist: any) => (
                 <Box onClick={() => handleOpenDownChat(userlist)}>
-                  <ChatList socket={socket} conversation={userlist} user={user} />
+                  <ChatList socket={socket} conversation={userlist} user={user} onlineUsers={onlineUsers} list={conversation}/>
                 </Box>
               ))}
             </Box>
-            : <ChatField socket={socket} />}
+            : <ChatField socket={socket} onlineUsers={onlineUsers}/>}
         </Box>}
     </>
   )

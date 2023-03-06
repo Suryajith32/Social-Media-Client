@@ -3,6 +3,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import  { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { ProfileFormData } from '../../../../../../services/Reducers/UserDataReducer';
+import postsImages from '../../../../../../services/Api/user/imageApi';
 
 function AddProfilePic() {
     const currentProfilePic = useSelector((state: any) => state.userData.value.profileImage)
@@ -38,7 +39,7 @@ function AddProfilePic() {
                             /> :
                             <Avatar
                                 sx={{ bgcolor: 'grey', color: "#FFFFFF", width: 60, height: 60 }}
-                                src={`/images/${currentProfilePic}`}
+                                src={`${postsImages}/${currentProfilePic}`}
                             />}
                     </Box>
                     <Box sx={{ pt: 1 }} >

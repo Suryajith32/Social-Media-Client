@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { UsersProfileData } from "../../../../services/Reducers/UserDataReducer";
 import { ErrorModalOpen } from "../../../../services/Reducers/UserReducer";
+import postsImages from "../../../../services/Api/user/imageApi";
 
 
 
@@ -103,7 +104,7 @@ function FriendListCard() {
                                     <Box>
                                         <Stack display='flex' direction='row' justifyContent='space-between'>
                                             <Box onClick={() => handleClickUser(item)}>
-                                                {item?.Images ? <Avatar src={`/images/${item?.Images}`} /> : <Avatar src='' />}
+                                                {item?.Images ? <Avatar src={`${postsImages}/${item?.Images}`} /> : <Avatar src='' />}
                                             </Box>
                                             <Box onClick={() => handleClickUser(item)} sx={{ color: '#FFFFFF', mt: 1.2 }}>
                                                 <Typography fontWeight={480} sx={{ fontVariant: 'h8' }}>{item?.username}</Typography>

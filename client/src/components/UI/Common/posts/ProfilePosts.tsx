@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../../../context/userContext';
+import postsImages from '../../../../services/Api/user/imageApi';
 import {  get_profile_posts, user_post_details } from '../../../../services/Api/userPost/postsApi';
 import { CommentModalOpen } from '../../../../services/Reducers/UserReducer';
 import NoPosts from '../../../skelton/NoPosts';
@@ -65,7 +66,7 @@ export default function StandardImageList() {
                   borderRadius: 'md',
                 }}
               >
-                <img src={`/images/${item?.Images}`} />
+                <img src={`${postsImages}/${item?.Images}`} />
               </AspectRatio>
             </Grid>
           ))}

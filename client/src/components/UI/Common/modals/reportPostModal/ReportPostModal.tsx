@@ -5,13 +5,14 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { ErrorModalOpen, ReportPostModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { ErrorModalOpen, ReportPostModalOpen, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { report_post } from '../../../../../services/Api/userPost/postsApi';
 import { UserContext } from '../../../../../context/userContext';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -50,6 +51,8 @@ export default function BasicModal(singlePostData: any) {
         try {
             const reportResponse = await report_post(text, details)
             if(reportResponse?.msg === 'reported'){
+                dispatch(SnackBarMessage('report recorded'))
+                dispatch(SnackBarOpen(true))
                 dispatch(ReportPostModalOpen(false))
             }
         } catch (error) {

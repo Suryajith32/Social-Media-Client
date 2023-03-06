@@ -2,13 +2,14 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { EditProfileModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { EditProfileModalOpen, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import { Stack } from '@mui/joy';
 import Textarea from '@mui/joy/Textarea';
 import AddProfilePic from './addProfilePic/AddProfilePic';
 import { useState, useContext } from 'react';
 import { add_profile_image, edit_user_profile } from '../../../../../services/Api/user/userApi';
 import { UserContext } from '../../../../../context/userContext';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 // @ts-ignore
 
 
@@ -70,6 +71,8 @@ function EditProfileModal(currentInfo: any) {
         }
         const userId = currentInfo?.currentInfo?._id
         await edit_user_profile(userId, userDetails)
+        dispatch(SnackBarMessage('changes saved'))
+        dispatch(SnackBarOpen(true))
         dispatch(EditProfileModalOpen(false))
         e.preveventDefault()
     }

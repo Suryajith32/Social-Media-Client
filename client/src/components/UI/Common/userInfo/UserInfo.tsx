@@ -1,6 +1,7 @@
 import { Avatar, Box, Button, IconButton, } from '@mui/material'
 import React, { useEffect,  } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import postsImages from '../../../../services/Api/user/imageApi'
 import { PostModalOpen } from '../../../../services/Reducers/UserReducer'
 import CreatePostModal from '../createPostModal/CreatePostModal'
 import UserProfileBio from './userProfileBio/UserProfileBio'
@@ -28,7 +29,7 @@ function UserInfo() {
                 {currentUserProfileBio?.Images ?
                     <Avatar
                         alt="Remy Sharp"
-                        src={`/images/${currentUserProfileBio?.Images}`}
+                        src={`${postsImages}/${currentUserProfileBio?.Images}`}
                         sx={{ width: 130, height: 130 }}
                     /> : <Avatar
                         alt="Remy Sharp"

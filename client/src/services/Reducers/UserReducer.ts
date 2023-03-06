@@ -15,6 +15,7 @@ const initialValue = {
     isNotifyUpdate:false,
     profileCardUpdate:false,
     isErrorModalOpen:false,
+    isCommentUpdate:false,
 }
 
 const userSlice = createSlice({
@@ -65,6 +66,9 @@ const userSlice = createSlice({
         },
         ErrorModalOpen: (state, action) => {
             state.value.isErrorModalOpen = action.payload
+        },
+        CommentDeleteUpdate: (state, action) => {
+            state.value.isCommentUpdate = action.payload
         }
     }
 })
@@ -83,6 +87,7 @@ export const {
     OtpModalOpen,
     NotifyUpdate,
     ProfileCardUpdate,
-    ErrorModalOpen
+    ErrorModalOpen,
+    CommentDeleteUpdate
 } = userSlice.actions;
 export default userSlice.reducer;

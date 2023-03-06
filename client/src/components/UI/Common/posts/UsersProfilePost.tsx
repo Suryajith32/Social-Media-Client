@@ -2,6 +2,7 @@ import { AspectRatio, Box, Grid, } from '@mui/joy';
 import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UserContext } from '../../../../context/userContext';
+import postsImages from '../../../../services/Api/user/imageApi';
 import {  get_profile_posts } from '../../../../services/Api/userPost/postsApi';
 import NoPosts from '../../../skelton/NoPosts';
 
@@ -44,7 +45,7 @@ export default function UsersProfilePost() {
                   borderRadius: 'md',
                 }}
               >
-                <img src={`/images/${item?.Images}`} />
+                <img src={`${postsImages}/${item?.Images}`} />
               </AspectRatio>
             </Grid>
           ))}

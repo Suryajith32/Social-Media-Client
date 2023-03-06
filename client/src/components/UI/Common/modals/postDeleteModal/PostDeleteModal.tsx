@@ -3,10 +3,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
-import { ErrorModalOpen, PostDeleteModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { ErrorModalOpen, PostDeleteModalOpen, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import { Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { delete_post } from '../../../../../services/Api/userPost/postsApi';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 
 
 const style = {
@@ -34,6 +35,8 @@ export default function BasicModal({ singlePostData }: any) {
     try {
       const deleteResponse = await delete_post(singlePostData._id)
       if (deleteResponse) {
+        dispatch(SnackBarMessage('post deleted'))
+        dispatch(SnackBarOpen(true))
         dispatch(PostDeleteModalOpen(false))
       }
     } catch (error) {

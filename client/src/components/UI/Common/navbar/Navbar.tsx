@@ -19,6 +19,7 @@ import jwtDecode from 'jwt-decode';
 import { useSelector } from 'react-redux';
 import SearchBar from './searchBar/SearchBar';
 import { get_notification_count } from '../../../../services/Api/user/userApi';
+import postsImages from '../../../../services/Api/user/imageApi';
 
 function Navbar() {
     const isProfileEditModal = useSelector((state: any) => state.user.value.isEditProfileModalOpen)
@@ -111,7 +112,7 @@ function Navbar() {
                                                 aria-haspopup="true"
                                                 aria-expanded={open ? 'true' : undefined}
                                             >
-                                                {ProfileImage ? <Avatar sx={{ width: 45, height: 45 }} src={`/images/${ProfileImage}`} /> :
+                                                {ProfileImage ? <Avatar sx={{ width: 45, height: 45 }} src={`${postsImages}/${ProfileImage}`} /> :
                                                     <Avatar sx={{ width: 45, height: 45 }} src='' />}
                                                 <Typography fontWeight={550} sx={{ ml: 2, color: '#FFFFFF' }}>{user?.name}</Typography>
                                             </IconButton>

@@ -9,8 +9,9 @@ import { get_chat_users, get_messages } from '../../../../../services/Api/user/u
 import { UserContext } from '../../../../../context/userContext';
 import axiosInstance from '../../../../../config/axios/axiosInstance';
 import { format } from 'timeago.js'
+import postsImages from '../../../../../services/Api/user/imageApi';
 
-function ChatField({ socket }: any) {
+function ChatField({ socket ,onlineUsers}: any) {
     const currentDataChat = useSelector((state: any) => state.userData.value.currentChatData)
     const ownProfilePic = useSelector((state: any) => state.userData.value.profileImage)
     const dispatch = useDispatch()
@@ -127,12 +128,12 @@ function ChatField({ socket }: any) {
                             </Box>
                             <Box>
                                 {users && users.Images ?
-                                    <Avatar sx={{ width: 56, height: 56 }} src={`/images/${users.Images}`} />
+                                    <Avatar sx={{ width: 56, height: 56 }} src={`${postsImages}/${users.Images}`} />
                                     : <Avatar sx={{ width: 56, height: 56 }} src='' />
                                 }
                             </Box>
                             <Box>
-                                <Typography sx={{ color: '#FFFFFF' }}>{users && users.username}  </Typography>
+                                <Typography sx={{ color: '#FFFFFF' }}>{users && users?.username}  </Typography>
                                 <Typography sx={{ color: '#FFFFFF', opacity: .3 }}>Active now </Typography>
                             </Box>
                         </Stack>
@@ -158,7 +159,7 @@ function ChatField({ socket }: any) {
                                     </Box>
                                     <Box>
                                         {ownProfilePic ?
-                                            <Avatar src={`/images/${ownProfilePic}`} /> :
+                                            <Avatar src={`${postsImages}/${ownProfilePic}`} /> :
                                             <Avatar src='' />}
                                     </Box>
                                 </Stack>
@@ -167,7 +168,7 @@ function ChatField({ socket }: any) {
                                     <Stack display='flex' direction='row' spacing={2} alignItems='center'>
                                         <Box>
                                             {users && users.Images ?
-                                                <Avatar src={`/images/${users.Images}`} /> :
+                                                <Avatar src={`${postsImages}/${users.Images}`} /> :
                                                 <Avatar src='' />}
                                         </Box>
                                         <Box>

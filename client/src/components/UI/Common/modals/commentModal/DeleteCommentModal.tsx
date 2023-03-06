@@ -3,10 +3,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useSelector, useDispatch } from 'react-redux';
-import { DeleteCommentModalOpen, ErrorModalOpen } from '../../../../../services/Reducers/UserReducer';
+import { CommentDeleteUpdate, DeleteCommentModalOpen, ErrorModalOpen, SnackBarOpen } from '../../../../../services/Reducers/UserReducer';
 import { Stack } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { delete_comment } from '../../../../../services/Api/userPost/postsApi';
+import { SnackBarMessage } from '../../../../../services/Reducers/UserDataReducer';
 
 
 const style = {
@@ -22,6 +23,7 @@ const style = {
 
 export default function BasicModal(commentID: any) {
   const isDeletePostOpen = useSelector((state: any) => state.user.value.isDeleteCommentModalOpen);
+ const isCommentDeleteUpdate = useSelector((state:any) => state.user.value.isCommentUpdate)
   const dispatch = useDispatch()
 
   const handleClose = () => {
@@ -33,6 +35,9 @@ export default function BasicModal(commentID: any) {
   const handleDeletePost = async () => {
   try {
     const deleteCommentRespone = await delete_comment(commentID?.currentCommentId)
+    dispatch(CommentDeleteUpdate(!isCommentDeleteUpdate))
+    dispatch(SnackBarMessage('comment deleted'))
+    dispatch(SnackBarOpen(true))
     if(deleteCommentRespone?.msg){
       dispatch(DeleteCommentModalOpen(false))
     }

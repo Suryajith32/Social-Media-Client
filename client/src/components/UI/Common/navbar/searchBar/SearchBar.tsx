@@ -9,6 +9,7 @@ import Popper from '@mui/material/Popper';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { UsersProfileData } from '../../../../../services/Reducers/UserDataReducer';
+import postsImages from '../../../../../services/Api/user/imageApi';
 
 
 function SearchBar() {
@@ -76,7 +77,7 @@ function SearchBar() {
                                             <Stack display='flex' direction='row' alignItems='center' spacing={2}>
                                                 <Box>
                                                     {item?.Images ?
-                                                        <Avatar src={`/images/${item?.Images}`} /> :
+                                                        <Avatar src={`${postsImages}/${item?.Images}`} /> :
                                                         <Avatar src='' />
                                                     }
                                                 </Box>

@@ -14,6 +14,8 @@ import { useDispatch } from 'react-redux';
 import { ReportDetailsModalOpen } from '../../../services/Reducers/AdminReducer';
 import ReportDetailsModal from '../../../components/UI/Admin/modal/reportDetailsModal/ReportDetailsModal'
 import { ErrorModalOpen } from '../../../services/Reducers/UserReducer';
+import postsImages from '../../../services/Api/user/imageApi';
+
 
 
 export default function Posts() {
@@ -91,7 +93,7 @@ export default function Posts() {
                                     <TableCell component="th" scope="row">
                                         <Box sx={{ width: 200, borderRadius: 'sm', p: 1 }}>
                                             <AspectRatio objectFit="contain">
-                                                <img src={`/images/${row?.Images}`} />
+                                                <img src={`${postsImages}/${row?.Images}`} />
                                             </AspectRatio>
                                         </Box>
                                     </TableCell>
