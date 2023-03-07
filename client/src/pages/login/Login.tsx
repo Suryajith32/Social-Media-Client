@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import {  login_user } from '../../services/Api/user/userApi'
 import { useDispatch } from 'react-redux'
 import { ErrorModalOpen } from '../../services/Reducers/UserReducer'
+import LoadingSpinner from '../../components/skelton/spinner/LoadingSpinner'
 
 function Login() {
 
@@ -17,6 +18,7 @@ function Login() {
     const [isUserExist, setIsUserExist] = useState(false)
     const [isBlockedUser, setIsBlockedUser] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [loading,setLoading] = useState<boolean>(false)
     const [user, setUser] = useState({
         email: '',
         password: ''
@@ -49,6 +51,7 @@ function Login() {
     //LOGIN SUBMIT//
 
     const submit = async () => {
+        setLoading(true)
         try {
             const login = await login_user(user)
             if (login.auth) {
@@ -56,25 +59,34 @@ function Login() {
                 navigate('/')
             } else {
                 if (login.message === "Wrong username password") {
+                    setLoading(false)
                     setIsUserExist(true)
                     setErrorMessage('Invalid Email or Password')
                 }
                 if (login.message === "The user is blocked") {
+                    setLoading(false)
                     setIsBlockedUser(true)
                     setErrorMessage('This User is blocked')
                 }
                 if (login.message === "no user exists") {
+                    setLoading(false)
                     setIsUserExist(true)
                     setErrorMessage('Invalid Email or Password')
                 }
             }
         } catch (err) {
-          dispatch(ErrorModalOpen(true))
+            setLoading(false)
+          dispatch(ErrorModalOpen(false))
         }
+        setLoading(false)
     }
 
     return (
         <div>
+           {loading?
+            <Box>
+            <LoadingSpinner/>
+            </Box>:
             <Box mt={5}>
                 <Grid container >
                     <Grid sx={{ display: { xs: 'none', md: 'block', lg: 'block', sm: 'none' } }} item xs={6} md={6}>
@@ -118,7 +130,7 @@ function Login() {
                         </Box>
                     </Grid>
                 </Grid>
-            </Box>
+            </Box>}
         </div>
     )
 }

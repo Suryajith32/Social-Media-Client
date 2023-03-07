@@ -69,7 +69,7 @@ const userSlice = createSlice({
         },
         CommentDeleteUpdate: (state, action) => {
             state.value.isCommentUpdate = action.payload
-        }
+        },
     }
 })
 
@@ -88,6 +88,6 @@ export const {
     NotifyUpdate,
     ProfileCardUpdate,
     ErrorModalOpen,
-    CommentDeleteUpdate
+    CommentDeleteUpdate,
 } = userSlice.actions;
 export default userSlice.reducer;

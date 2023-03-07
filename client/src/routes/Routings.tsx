@@ -15,6 +15,7 @@ import Posts from '../pages/admin/posts/Posts'
 import React from 'react'
 import Spinner from '../components/skelton/spinner/Spinner'
 import LineSpinner from '../components/skelton/spinner/LineSpinner'
+import ProtectedRoutes from '../ProtectedRoute'
 const LazyHome = React.lazy(() => import('../pages/home/Home'))
 const LazyFeed = React.lazy(() => import('../components/UI/Common/feed/Feed'))
 const LazyUserProfile = React.lazy(() => import('../pages/userProfile/UserProfile'))
@@ -35,7 +36,7 @@ function Routings() {
       socketio?.emit("addUser", user?.id, user?.name)
     }
   }, [])
-  
+
   return (
     <div>
       <Router>
@@ -48,12 +49,14 @@ function Routings() {
             <Route path='error' element={<InternalServerError />} />
             <Route path='*' element={<Error />} />
 
-            <Route path='/' element={<React.Suspense fallback={<Spinner/>}><LazyHome /></React.Suspense>} >
-              <Route path='/' element={<React.Suspense fallback={<LineSpinner/>}><LazyFeed socketio={socketio} /></React.Suspense>} />
-              <Route path='profile' element={<React.Suspense fallback={<LineSpinner/>}><LazyUserProfile /></React.Suspense>} />
-              <Route path='users-profile' element={<React.Suspense fallback={<LineSpinner/>}><LazyUsersProfile /></React.Suspense>} />
-              <Route path='notification' element={<React.Suspense fallback={<LineSpinner/>}><LazyNotification /></React.Suspense>} />
-              <Route path='inbox' element={<React.Suspense fallback={<LineSpinner/>}><LazyMessages socketio={socketio} /></React.Suspense>} />
+            <Route path="/" element={<ProtectedRoutes />}>
+              <Route path='/' element={<React.Suspense fallback={<Spinner />}><LazyHome /></React.Suspense>} >
+                <Route path='/' element={<React.Suspense fallback={<LineSpinner />}><LazyFeed socketio={socketio} /></React.Suspense>} />
+                <Route path='profile' element={<React.Suspense fallback={<LineSpinner />}><LazyUserProfile /></React.Suspense>} />
+                <Route path='users-profile' element={<React.Suspense fallback={<LineSpinner />}><LazyUsersProfile /></React.Suspense>} />
+                <Route path='notification' element={<React.Suspense fallback={<LineSpinner />}><LazyNotification /></React.Suspense>} />
+                <Route path='inbox' element={<React.Suspense fallback={<LineSpinner />}><LazyMessages socketio={socketio} /></React.Suspense>} />
+              </Route>
             </Route>
 
             <Route path='admin-login' element={<AdminLogin />} />
