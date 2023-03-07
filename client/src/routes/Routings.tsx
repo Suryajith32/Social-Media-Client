@@ -23,7 +23,8 @@ const LazyMessages = React.lazy(() => import('../pages/messages/Messages'))
 const LazyUsersProfile = React.lazy(() => import('../pages/usersProfile/UsersProfile'))
 const LazyNotification = React.lazy(() => import('../pages/notification/Notification'))
 
-const socketio = require('socket.io-client')("ws://localhost:8000")
+// const socketio = require('socket.io-client')("ws://localhost:8000")
+const socketio = require('socket.io-client')("https://go-socialize-socket-server.onrender.com")
 
 function Routings() {
   const data: any = localStorage.getItem('token')

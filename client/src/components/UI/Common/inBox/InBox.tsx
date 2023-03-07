@@ -23,7 +23,9 @@ function InBox({ socket }: any) {
   if (user) {
     var userId = user.id
   }
-  const socketio = require('socket.io-client')("ws://localhost:8000")
+  // const socketio = require('socket.io-client')("ws://localhost:8000")
+  const socketio = require('socket.io-client')("https://go-socialize-socket-server.onrender.com")
+
   useEffect(() => {
     socketio?.emit("addUser", user?.id, user?.name)
   }, [user?.id])
