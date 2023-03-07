@@ -100,7 +100,7 @@ function ChatField({ socket ,onlineUsers}: any) {
         })
         try {
             if (newMessage) {
-                axiosInstance.post("http://localhost:4000/message", message, {
+                axiosInstance.post("https://go-socialize.onrender.com/message", message, {
                     headers: {
                         "x-access-token": localStorage.getItem("token"),
                     },
