@@ -1,42 +1,45 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Feed from '../components/UI/Common/feed/Feed'
-import { User, UserContext } from '../context/userContext'
+import { User } from '../context/userContext'
 import AdminLogin from '../pages/admin/adminLogin/AdminLogin'
 import Error from '../pages/error/Error'
 import InternalServerError from '../pages/error/InternalServerError'
 import ForgotPassword from '../pages/forgotPassword/ForgotPassword'
-import Home from '../pages/home/Home'
 import Login from '../pages/login/Login'
-import Messages from '../pages/messages/Messages'
-import Notification from '../pages/notification/Notification'
 import ResetPassword from '../pages/resetPassword/ResetPassword'
 import Signup from '../pages/signup/Signup'
-import UserProfile from '../pages/userProfile/UserProfile'
-import UsersProfile from '../pages/usersProfile/UsersProfile'
 import AdminHome from '../pages/admin/adminHome/AdminHome'
 import jwtDecode from 'jwt-decode'
-import { useEffect,useContext } from 'react'
+import { useEffect } from 'react'
 import Users from '../pages/admin/users/Users'
 import Posts from '../pages/admin/posts/Posts'
+import React from 'react'
+import Spinner from '../components/skelton/spinner/Spinner'
+import LineSpinner from '../components/skelton/spinner/LineSpinner'
+const LazyHome = React.lazy(() => import('../pages/home/Home'))
+const LazyFeed = React.lazy(() => import('../components/UI/Common/feed/Feed'))
+const LazyUserProfile = React.lazy(() => import('../pages/userProfile/UserProfile'))
+const LazyMessages = React.lazy(() => import('../pages/messages/Messages'))
+const LazyUsersProfile = React.lazy(() => import('../pages/usersProfile/UsersProfile'))
+const LazyNotification = React.lazy(() => import('../pages/notification/Notification'))
 
 const socketio = require('socket.io-client')("ws://localhost:8000")
 
-
 function Routings() {
- const data:any = localStorage.getItem('token')
+  const data: any = localStorage.getItem('token')
+
   useEffect(() => {
     if (data != null) {
-        const user:any = jwtDecode(data)
-      console.log(user,'user from routings')
-    
-    socketio?.emit("addUser", user?.id,user?.name)
-    }
+      const user: any = jwtDecode(data)
+      console.log(user, 'user from routings')
 
-}, [])
+      socketio?.emit("addUser", user?.id, user?.name)
+    }
+  }, [])
+  
   return (
     <div>
       <Router>
-      <User>
+        <User>
           <Routes>
             <Route path='signup' element={<Signup />} />
             <Route path='login' element={<Login />} />
@@ -45,22 +48,22 @@ function Routings() {
             <Route path='error' element={<InternalServerError />} />
             <Route path='*' element={<Error />} />
 
-            <Route path='/' element={<Home />} >
-              <Route path='/' element={<Feed socketio={socketio}/>} />
-              <Route path='profile' element={<UserProfile />} />
-              <Route path='users-profile' element={<UsersProfile />} />
-              <Route path='notification' element={<Notification />} />
-              <Route path='inbox' element={<Messages socketio={socketio}/>} />
+            <Route path='/' element={<React.Suspense fallback={<Spinner/>}><LazyHome /></React.Suspense>} >
+              <Route path='/' element={<React.Suspense fallback={<LineSpinner/>}><LazyFeed socketio={socketio} /></React.Suspense>} />
+              <Route path='profile' element={<React.Suspense fallback={<LineSpinner/>}><LazyUserProfile /></React.Suspense>} />
+              <Route path='users-profile' element={<React.Suspense fallback={<LineSpinner/>}><LazyUsersProfile /></React.Suspense>} />
+              <Route path='notification' element={<React.Suspense fallback={<LineSpinner/>}><LazyNotification /></React.Suspense>} />
+              <Route path='inbox' element={<React.Suspense fallback={<LineSpinner/>}><LazyMessages socketio={socketio} /></React.Suspense>} />
             </Route>
 
-            <Route path='admin-login'  element={<AdminLogin/>}/>
-            <Route path='admin' element ={<AdminHome/>}>
-            <Route path='usermanagement'  element={<Users/>}/>
-            <Route path='postmanagement' element={<Posts/>}/>
+            <Route path='admin-login' element={<AdminLogin />} />
+            <Route path='admin' element={<AdminHome />}>
+              <Route path='usermanagement' element={<Users />} />
+              <Route path='postmanagement' element={<Posts />} />
 
             </Route>
           </Routes>
-          </User>
+        </User>
       </Router>
     </div>
   )
