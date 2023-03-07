@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {UsersProfileData} from '../../../../services/Reducers/UserDataReducer'
 import { ErrorModalOpen, ProfileCardUpdate } from '../../../../services/Reducers/UserReducer'
 import postsImages from '../../../../services/Api/user/imageApi'
+import SuggestionSkelton from '../../../skelton/SuggestionSkelton'
 
 function SuggestionCard() {
     const { user } = useContext(UserContext)
@@ -34,7 +35,7 @@ function SuggestionCard() {
 
     // FETCHING SUGGESTED USER //
 
-    const { data: SuggestedProfiles, refetch } = useQuery(["suggestedprofiles"], () => {
+    const { data: SuggestedProfiles, refetch,isLoading } = useQuery(["suggestedprofiles"], () => {
         return axiosInstance.get('/users', {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
@@ -81,7 +82,11 @@ function SuggestionCard() {
 
     return (
         <div>
-            <Box sx={{
+           {isLoading ?
+           <Box>
+            <SuggestionSkelton/>
+           </Box>:
+           <Box sx={{
                 bgcolor: 'rgba(225,225,225,0.10)', height: '43vh', borderRadius: '23px', overflow: "hidden",
                 overflowY: "scroll",
             }}>
@@ -108,7 +113,7 @@ function SuggestionCard() {
                         </Stack>}
                     </Box>
                 ))}
-            </Box>
+            </Box>}
         </div>
     )
 }

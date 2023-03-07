@@ -9,29 +9,33 @@ export default function SkeletonChildrenDemo() {
 
     return (
         <div>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ margin: 1 }}>
-                    <Skeleton sx={{ bgcolor: 'grey.900' }} variant="circular">
-                        <Avatar  />
+            {[0, 1, 2].map((_, index) => (
+                <Box>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ margin: 1 }}>
+                            <Skeleton sx={{ bgcolor: 'grey.900' }} variant="circular">
+                                <Avatar />
+                            </Skeleton>
+                        </Box>
+                        <Box sx={{ width: '20%' }}>
+                            <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
+                                <Typography>.</Typography>
+                            </Skeleton>
+                            <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
+                                <Typography>.</Typography>
+                            </Skeleton>
+                        </Box>
+                    </Box>
+                    <Box sx={{ width: '80%', ml: 5, mr: 5, mt: 2 }}>
+                        <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
+                            <Typography>.</Typography>
+                        </Skeleton>
+                    </Box>
+                    <Skeleton sx={{ bgcolor: 'grey.900', borderRadius: '23px', mt: 2 }} variant="rectangular" width="100%">
+                        <div style={{ paddingTop: '57%' }} />
                     </Skeleton>
                 </Box>
-                <Box sx={{ width: '20%' }}>
-                    <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
-                        <Typography>.</Typography>
-                    </Skeleton>
-                    <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
-                        <Typography>.</Typography>
-                    </Skeleton>
-                </Box>              
-            </Box>
-            <Box sx={{ width: '80%',ml:5,mr:5 ,mt:2}}>
-                    <Skeleton sx={{ bgcolor: 'grey.900' }} width="100%">
-                        <Typography>.</Typography>
-                    </Skeleton>
-                </Box>
-            <Skeleton sx={{ bgcolor: 'grey.900',borderRadius:'23px',mt:2 }} variant="rectangular" width="100%">
-                <div style={{ paddingTop: '57%' }} />
-            </Skeleton>
+            ))}
         </div>
     );
 }

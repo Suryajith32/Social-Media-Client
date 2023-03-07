@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { UsersProfileData } from "../../../../services/Reducers/UserDataReducer";
 import { ErrorModalOpen } from "../../../../services/Reducers/UserReducer";
 import postsImages from "../../../../services/Api/user/imageApi";
+import FriendListSkelton from "../../../skelton/FriendListSkelton";
 
 
 
@@ -25,7 +26,7 @@ function FriendListCard() {
 
     // FETCHING FRIEND USERs //
 
-    const { data: FriendsProfiles, refetch } = useQuery(["friendsprofile"], () => {
+    const { data: FriendsProfiles, refetch,isLoading } = useQuery(["friendsprofile"], () => {
         return axiosInstance.get('/users', {
             headers: {
                 "x-access-token": localStorage.getItem("token"),
@@ -81,17 +82,11 @@ function FriendListCard() {
 
     return (
         <div>
-            <Box sx={{ bgcolor: 'rgba(225,225,225,0.10)', height: '70vh', borderRadius: '23px' }}>
-                {/* <Box display='flex' justifyContent='center' sx={{ width: '100%', pt: 2 }}>
-                    <Box display='flex' alignItems='center' sx={{ bgcolor: 'rgba(255, 255, 255, 0.2)', width: '14em', maxHeight: '6vh', borderRadius: 2, }}>
-                        <Box display='flex' justifyContent='center' alignItems='center' sx={{ ml: 1, height: '4.4vh', width: '2.5em', bgcolor: '#009EFF', borderRadius: 20, }}>
-                            <SearchIcon />
-                        </Box>
-                        <Box sx={{ mt: 1, }}>
-                            <input className='nav-search' type='text' placeholder='Search' />
-                        </Box>
-                    </Box>
-                </Box> */}
+            {isLoading?
+            <Box>
+              <FriendListSkelton/>
+            </Box>:
+                <Box sx={{ bgcolor: 'rgba(225,225,225,0.10)', height: '70vh', borderRadius: '23px' }}>
                 <Box sx={{ ml: 5, pt: 3 }}>
                     <Typography fontWeight={480} sx={{ opacity: 0.5, color: '#FFFFFF' }}>Friends</Typography>
                 </Box>
@@ -127,7 +122,7 @@ function FriendListCard() {
                     </Box>
 
                 </Box>
-            </Box>
+            </Box>}
         </div>
     )
 }
