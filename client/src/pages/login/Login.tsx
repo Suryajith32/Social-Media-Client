@@ -19,6 +19,7 @@ function Login() {
     const [isBlockedUser, setIsBlockedUser] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [loading,setLoading] = useState<boolean>(false)
+    const text = 'Signing in'
     const [user, setUser] = useState({
         email: '',
         password: ''
@@ -85,7 +86,7 @@ function Login() {
         <div>
            {loading?
             <Box>
-            <LoadingSpinner/>
+            <LoadingSpinner text={'Signing in'}/>
             </Box>:
             <Box mt={5}>
                 <Grid container >

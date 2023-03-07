@@ -26,6 +26,7 @@ export default function OtpModal(userDetails: any) {
     const { register, formState: { errors }, handleSubmit } = useForm()
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const [loading, setLoading] = React.useState<boolean>(false)
     const [incorrectOtp, setIncorrectOtp] = React.useState<boolean>(false)
     const [otpCheck, setOtp] = React.useState<any>({
         otp: '',
@@ -43,24 +44,30 @@ export default function OtpModal(userDetails: any) {
 
     const onSubmit = async () => {
         const { username, email, phone, password } = userDetails?.user
+        setLoading(true)
         try {
             const verifySignUp = await user_verify_signup_otp(otpCheck)
             if (verifySignUp === 'incorrect otp') {
+                setLoading(false)
                 setIncorrectOtp(true)
             }
             if (verifySignUp === 'otp verified') {
                 if (username && email && phone && password) {
                     let signup = await sign_up_user(userDetails?.user)
                     if (signup === "User exist") {
+                        setLoading(false)
                         navigate('/signup')
-                    }else if (signup === "No user exist") {
+                    } else if (signup === "No user exist") {
+                        setLoading(false)
                         navigate('/login')
                     }
                 }
             }
         } catch (error) {
+            setLoading(false)
             dispatch(ErrorModalOpen(true))
         }
+        setLoading(false)
     }
 
     return (
