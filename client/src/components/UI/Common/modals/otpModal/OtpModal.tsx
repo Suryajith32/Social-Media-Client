@@ -79,8 +79,8 @@ export default function OtpModal(userDetails: any) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <Box sx={{ bgcolor: 'black', width: '100%', height: '30vh' }}>
-                        <Box sx={{ bgcolor: 'rgba(225,225,225,0.10)', width: '100%', height: '30vh', }}>
+                    <Box sx={{ bgcolor: 'black', width: '100%', height: '35vh' }}>
+                        <Box sx={{ bgcolor: 'rgba(225,225,225,0.10)', width: '100%', height: '35vh', }}>
                             <Box display='flex' justifyContent='center' sx={{ pt: 2 }}>
                                 <Typography sx={{ color: '#FFFFFF' }}>An otp has been sent to your email</Typography>
                             </Box>
@@ -89,9 +89,6 @@ export default function OtpModal(userDetails: any) {
                                     <input type="password" id="otp" {...register("otp", { required: 'Otp is required' })} onChange={handleChange} placeholder="Enter OTP" />
                                     <Box sx={{ color: 'red' }}>
                                         {errors.email?.type === "required" && "Email is Required"}
-                                    </Box>
-                                    <Box>
-                                        <Typography sx={{ color: '#FFFFFF' }}>Enter New Password</Typography>
                                     </Box>
                                     <Box sx={{ mt: 1 }}>
                                         <button onClick={onSubmit} className="btn btn-primary btn-block btn-large">Submit</button>
